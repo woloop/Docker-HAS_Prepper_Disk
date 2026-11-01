@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAS_PrepperDisk :: Ana Sayfa</title>
+<style>
+  body{margin:0;background:#E5E5E5;color:#000;font-family:Verdana,Tahoma,Arial,sans-serif;font-size:11px}
+  a{color:#006699;text-decoration:none}
+  a:hover{color:#DD6900;text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:10px}
+  .bodyline{background:#fff;border:1px solid #98AAB1;padding:8px}
+
+  /* başlık */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 10px}
+  .logo{font-family:"Trebuchet MS",Verdana,sans-serif;font-size:26px;font-weight:bold;color:#006699;letter-spacing:-1px;
+    text-shadow:1px 1px 0 #C7D0D7;display:flex;align-items:center;gap:8px}
+  .logo span{color:#DD6900}
+  .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;
+    background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;
+    display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
+  .docker-tag svg{width:14px;height:14px;fill:#006699}
+  .slogan{font-size:11px;color:#555;margin-top:2px}
+  .navlinks{font-size:11px;font-weight:bold}
+  .navlinks a{margin-left:10px}
+  .navlinks a::before{content:"» ";color:#999;font-weight:normal}
+
+  .crumb{font-weight:bold;font-size:12px;margin:8px 2px}
+  .small{font-size:10px;color:#444}
+
+  /* tablolar */
+  .scroll{overflow-x:auto}
+  table.forumline{width:100%;border-collapse:collapse;border:1px solid #006699;background:#fff;margin-bottom:10px}
+  .forumline th{background:linear-gradient(#3F7FAD,#006699);color:#FFA34F;font-size:11px;font-weight:bold;
+    height:24px;padding:0 6px;border:1px solid #fff;border-top:0;white-space:nowrap}
+  .forumline td{padding:5px 6px;border:1px solid #fff}
+  td.cat{background:linear-gradient(#EEF2F5,#C7D0D7);height:22px;font-weight:bold;font-size:12px;letter-spacing:1px}
+  td.cat a{color:#006699}
+  td.row1{background:#EFEFEF}
+  td.row2{background:#DEE3E7}
+  td.row3{background:#D1D7DC}
+  td.c{text-align:center}
+  .fname{font-size:12px;font-weight:bold}
+  .fdesc{font-size:11px;color:#222;margin-top:2px}
+  .fmod{font-size:10px;color:#666;margin-top:3px}
+  .off .fname{color:#777}
+
+  /* klasör ikonları */
+  .fold{display:inline-block;position:relative;width:22px;height:16px;margin-top:4px;
+    background:linear-gradient(#FFE38A,#F2B935);border:1px solid #B07F12;border-radius:1px}
+  .fold::before{content:"";position:absolute;left:-1px;top:-5px;width:9px;height:4px;background:#F7CF5C;
+    border:1px solid #B07F12;border-bottom:0;border-radius:2px 2px 0 0}
+  .fold.new::after{content:"";position:absolute;right:-4px;top:-4px;width:7px;height:7px;background:#E2451D;
+    border:1px solid #fff;border-radius:50%}
+  .fold.gray{background:linear-gradient(#E6E6E6,#B9B9B9);border-color:#888}
+  .fold.gray::before{background:#D3D3D3;border-color:#888}
+
+  /* arama kutusu */
+  .search td{background:#EFEFEF}
+  .search input[type=text],.search select{font-family:Verdana,sans-serif;font-size:11px;border:1px solid #7F9DB9;padding:2px;background:#fff}
+  .search input[type=text]{width:220px;max-width:100%}
+  .btn{font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;background:#FAFAFA;border:1px solid #000;padding:1px 6px;cursor:pointer}
+  .btn:hover{background:#FFF3D6}
+
+  .legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:4px 2px 10px}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .legend .fold{margin-top:0;transform:scale(.8)}
+
+  .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
+
+  @media (max-width:640px){ .hide-s{display:none} .logo{font-size:22px} }
+</style>
+</head>
+<body>
+<div class="wrap"><div class="bodyline">
+
+  <div class="top">
+    <div>
+      <div class="logo">
+        <a href="/home" style="color:inherit;text-decoration:none">HAS_<span>Prepper</span>Disk</a>
+        <span class="docker-tag">
+          <svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.186.185.186zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.714h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm-2.928 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm21.618 1.409c-.37-.215-1.004-.341-1.647-.354-.082-.41-.304-.77-.66-.998-.679-.434-1.614-.4-2.29.073-.393-.779-1.246-1.272-2.179-1.258-.093 0-.188.005-.28.016v-.668c0-.306-.247-.554-.553-.554H.553C.247 6.64 0 6.888 0 7.194v5.485c0 2.297.868 4.437 2.443 6.027C4.018 20.295 6.136 21.18 8.411 21.18c5.44 0 9.851-4.41 9.851-9.851 0-.11-.004-.219-.01-.328.704-.42 1.543-.591 2.378-.36.425.118.81.334 1.127.632.428-.466.82-.973 1.168-1.517-.384-.214-.766-.4-1.123-.554z"/></svg>
+          DOCKERIZED
+        </span>
+      </div>
+      <div class="slogan">Çevrimdışı bilgi arşivi &mdash; internet olmasa da açık</div>
+    </div>
+    <div class="navlinks">
+      <a href="/dictionary">Sözlük</a><a href="/translate">Çeviri</a><a href="/maps">Harita</a><a href="/docs">Belgeler</a><a href="/kiwix/">Kütüphane</a><a href="/setup">Kurulum &amp; Yönetim</a>
+    </div>
+  </div>
+
+  <table class="forumline search"><tr><td>
+    <form id="search">
+      <b>Ara:</b>
+      <input type="text" id="q" placeholder="ilk yardım, su arıtma...">
+      <select id="book"></select>
+      <input type="submit" class="btn" value="Git">
+    </form>
+  </td></tr></table>
+
+  <div class="crumb"><a href="/home">HAS_PrepperDisk Ana Sayfa</a></div>
+  <div class="small" style="margin:0 2px 6px" id="now"></div>
+
+  <div class="scroll">
+  <table class="forumline" id="forums">
+    <tr>
+      <th colspan="2">Bölüm</th>
+      <th class="hide-s" width="60">Dil</th>
+      <th width="80">Boyut</th>
+      <th class="hide-s" width="150">Durum</th>
+    </tr>
+  </table>
+  </div>
+
+  <div class="legend small">
+    <span><i class="fold"></i> Hazır</span>
+    <span><i class="fold gray"></i> Henüz yüklenmedi</span>
+  </div>
+
+  <table class="forumline">
+    <tr><td class="cat">Sistem bilgisi</td></tr>
+    <tr><td class="row1" id="stats"></td></tr>
+  </table>
+
+  <div class="copy">
+    HAS_PrepperDisk &copy; 2026 &middot; Raspberry Pi 5 üzerinde çalışır<br>
+    İçerikler: Wikipedia, OpenStreetMap, Kolibri &mdash; ilgili lisanslar altında
+  </div>
+
+</div></div>
+
+<script>
+/* İçerik listesi. Bölüm eklemek/çıkarmak için sadece burayı düzenle.
+   zim: Kiwix dosya adının tarihsiz başı. Sayfa, cihazda hangi sürümün
+        yüklü olduğunu Kiwix kataloğundan kendisi bulur.
+   url: zim olmayan servisler için sabit adres.
+   Cihazda bulunamayan ZIM'ler gri klasörle "henüz yüklenmedi" görünür. */
+const CATS = [
+  { title:"Çevrimdışı Araçlar", items:[
+    { name:"Çevrimdışı Dünya ve Türkiye Haritası", desc:"OpenStreetMap tabanlı sokak seviyesinde internetsiz vektör harita ve GPS koordinat aracı.", lang:"TR/EN", size:"~1.7 GB", url:"/maps" },
+    { name:"Çevrimdışı Sözlük Sistemi", desc:"İngilizce, Türkçe, Almanca, Fransızca, İspanyolca ve diğer diller için kelimesi kelimesine çift yönlü sözlük.", lang:"ÇOKLU", size:"Yerleşik", url:"/dictionary" },
+    { name:"Çok Dilli Yerel Çeviri Aracı", desc:"İngilizce, Türkçe, Almanca, Fransızca, Rusça, Arapça ve diğer diller arasında internet olmadan yapay zeka çevirisi.", lang:"ÇOKLU", size:"Yerleşik", url:"/translate" },
+    { name:"Kişisel Belge Kitaplığı (PDF / TXT / MD)", desc:"Kendi PDF, TXT, MD el kitaplarınızı yükleyin, okuyun ve tek tıkla çevrimdışı Türkçeye çevirin.", lang:"ÇOKLU", size:"Yerleşik", url:"/docs" },
+  ]},
+  { title:"Türkçe Kitaplık", items:[
+    { name:"iFixit (Türkçe Tamir Rehberleri)", desc:"Cihaz, beyaz eşya ve araç tamiri için adım adım Türkçe kılavuzlar.", lang:"TR", size:"~3,6 GB", zim:"ifixit_tr_all", search:true },
+    { name:"Vikikitap (Açık Ders Kitapları)", desc:"Açık ders kitapları, zanaat ve pratik el kitapları.", lang:"TR", size:"~27 MB", zim:"wikibooks_tr_all_maxi", search:true },
+    { name:"Vikikaynak (Kanunlar ve Metinler)", desc:"Telifsiz tarihi metinler, resmi kanunlar ve edebi klasikler.", lang:"TR", size:"~68 MB", zim:"wikisource_tr_all_maxi", search:true },
+    { name:"Vikisöz (Özlü Sözler)", desc:"Türkçe özlü sözler, alıntılar ve atasözleri arşivi.", lang:"TR", size:"~59 MB", zim:"wikiquote_tr_all_maxi", search:true },
+    { name:"PhET Simülasyonları", desc:"Fizik, kimya, su arıtma ve fen deneyleri için etkileşimli deney simülasyonları.", lang:"TR", size:"~107 MB", zim:"phet_tr_all" },
+  ]},
+  { title:"Ansiklopedi ve Sözlük Arşivleri", items:[
+    { name:"Vikipedi (Türkçe)", desc:"Türkçe Vikipedi'nin resimli tam kopyası.", lang:"TR", size:"~9 GB", zim:"wikipedia_tr_all_maxi", search:true },
+    { name:"Vikisözlük (Türkçe Wiktionary)", desc:"Türkçe Vikisözlük tam arşivi: kelimeler, deyimler ve etimoloji.", lang:"TR", size:"~810 MB", zim:"wiktionary_tr_all_nopic", search:true },
+    { name:"Wikipedia (English)", desc:"Tüm İngilizce Wikipedia, resimleriyle birlikte.", lang:"EN", size:"~120 GB", zim:"wikipedia_en_all_maxi", search:true },
+    { name:"Wikipedia (English - Resimsiz)", desc:"İngilizce Wikipedia'nın resimsiz, küçük diskler için uygun sürümü.", lang:"EN", size:"~55 GB", zim:"wikipedia_en_all_nopic", search:true },
+    { name:"Wiktionary (English)", desc:"İngilizce Wiktionary kapsamlı sözlük arşivi.", lang:"EN", size:"~8,5 GB", zim:"wiktionary_en_all_nopic", search:true },
+  ]},
+  { title:"Hayatta Kalma ve Hazırlık", items:[
+    { name:"Appropedia", desc:"Uygun teknoloji wiki'si: krizde su, güneş enerjisi, tarım ve barınak çözümleri.", lang:"EN", size:"~580 MB", zim:"appropedia_en_all_maxi", search:true },
+    { name:"Afet Sonrası Kitaplığı", desc:"Barınak, enerji, tarım ve yeniden yapılanma üzerine kitaplar.", lang:"EN", size:"~615 MB", zim:"zimgit-post-disaster_en", search:true },
+    { name:"Su Arıtma", desc:"İçme suyu bulma, arıtma ve saklama.", lang:"EN", size:"~20 MB", zim:"zimgit-water_en" },
+    { name:"Gıda Hazırlama ve Saklama", desc:"Konserve, kurutma ve uzun süreli gıda saklama.", lang:"EN", size:"~93 MB", zim:"zimgit-food-preparation_en" },
+    { name:"Düğümler Kitaplığı", desc:"Düğüm çeşitleri ve kullanım alanları.", lang:"EN", size:"~27 MB", zim:"zimgit-knots_en" },
+    { name:"Ready.gov", desc:"ABD resmi afet hazırlık rehberleri: deprem, sel, yangın.", lang:"EN", size:"~1,9 GB", zim:"ready.gov_en_all", search:true },
+    { name:"Low-tech Magazine", desc:"Elektriksiz ve düşük teknolojili pratik çözümler.", lang:"EN", size:"~670 MB", zim:"solar.lowtechmagazine.com_mul_all" },
+  ]},
+  { title:"Sağlık ve İlk Yardım", items:[
+    { name:"WikiMed", desc:"Wikipedia'nın tıp maddeleri: hastalıklar, ilaçlar, anatomi.", lang:"EN", size:"~2 GB", zim:"wikipedia_en_medicine_maxi", search:true },
+    { name:"MDWiki", desc:"Doktorlar tarafından düzenlenen tıp ansiklopedisi.", lang:"EN", size:"~2 GB", zim:"mdwiki_en_all_maxi", search:true },
+    { name:"MedlinePlus", desc:"ABD Ulusal Tıp Kütüphanesi resmi hasta bilgilendirme ve tedavi kılavuzları.", lang:"EN", size:"~1,9 GB", zim:"medlineplus.gov_en_all", search:true },
+    { name:"Tıp Kitaplığı", desc:"Temel tıp ve sağlık kitapları.", lang:"EN", size:"~67 MB", zim:"zimgit-medicine_en" },
+    { name:"Askeri Sahra Tıbbı", desc:"Sahada travma ve yaralı bakımı.", lang:"EN", size:"~72 MB", zim:"irp.fas.org_en_military-medicine" },
+    { name:"NHS İlaç Rehberi", desc:"İlaçların kullanımı, dozları ve yan etkileri.", lang:"EN", size:"~15 MB", zim:"nhs.uk_en_medicines" },
+  ]},
+  { title:"Tamir ve Beceriler", items:[
+    { name:"iFixit", desc:"Cihaz ve araç tamiri için adım adım rehberler.", lang:"EN", size:"~3 GB", zim:"ifixit_en_all", search:true },
+    { name:"Ev Tamiri (DIY)", desc:"Elektrik, tesisat ve yapı soruları.", lang:"EN", size:"~1,2 GB", zim:"diy.stackexchange.com_en_all" },
+    { name:"Bahçecilik", desc:"Sebze yetiştirme, toprak ve bitki hastalıkları.", lang:"EN", size:"~500 MB", zim:"gardening.stackexchange.com_en_all" },
+    { name:"Yemek Pişirme", desc:"Pişirme teknikleri ve gıda güvenliği.", lang:"EN", size:"~350 MB", zim:"cooking.stackexchange.com_en_all" },
+    { name:"Amatör Telsiz", desc:"Telsiz kurulumu, anten ve haberleşme.", lang:"EN", size:"~250 MB", zim:"ham.stackexchange.com_en_all" },
+    { name:"Araç Bakımı", desc:"Motor, fren ve araç arızaları.", lang:"EN", size:"~450 MB", zim:"mechanics.stackexchange.com_en_all" },
+    { name:"Doğa ve Kamp", desc:"Kamp, yürüyüş ve doğada hayatta kalma.", lang:"EN", size:"~200 MB", zim:"outdoors.stackexchange.com_en_all" },
+    { name:"Sürdürülebilirlik", desc:"Enerji, su ve kaynak tasarrufu.", lang:"EN", size:"~100 MB", zim:"sustainability.stackexchange.com_en_all" },
+  ]},
+  { title:"Büyük ve İsteğe Bağlı Arşivler", items:[
+    { name:"Wikivoyage (Seyahat Rehberi)", desc:"Dünya genelinde çevrimdışı seyahat ve bölge rehberi.", lang:"EN", size:"~1,2 GB", zim:"wikivoyage_en_all_maxi", search:true },
+    { name:"Survivor Library (Tam Arşiv)", desc:"Tarihi el kitapları, zanaat, tarım ve mühendislik arşivi.", lang:"EN", size:"~205 GB", zim:"survivorlibrary.com_en_all", search:true },
+  ]},
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* Kiwix kataloğundan cihazdaki ZIM'leri oku: { "wikipedia_tr_all_maxi_2026-09": "/kiwix/content/..." } */
+async function loadBooks(){
+  try{
+    const r = await fetch("/kiwix/catalog/v2/entries?count=-1");
+    const xml = new DOMParser().parseFromString(await r.text(), "application/xml");
+    const books = [];
+    for (const e of xml.querySelectorAll("entry")) {
+      const l = e.querySelector('link[type="text/html"]');
+      if (!l) continue;
+      const href = l.getAttribute("href");
+      const title = (e.querySelector("title") || {}).textContent || "";
+      books.push({ id: href.split("/").filter(Boolean).pop(), href, title });
+    }
+    return books;
+  }catch(e){ return null; }
+}
+
+function render(books){
+  let html = "", ready = 0, total = 0;
+  const used = new Set();
+  const sel = document.getElementById("book");
+  for (const c of CATS) {
+    html += `<tr><td class="cat" colspan="5">${esc(c.title)}</td></tr>`;
+    for (const i of c.items) {
+      total++;
+      let url = i.url || null, status = i.url ? "Kurulu" : "Henüz yüklenmedi";
+      if (i.zim) {
+        if (books === null) { url = "/kiwix/"; status = "Kütüphaneden açın"; }
+        else {
+          const b = books.filter(b => b.id.startsWith(i.zim)).sort((a,z) => a.id < z.id ? 1 : -1)[0];
+          if (b) {
+            used.add(b.id);
+            url = b.href;
+            const v = b.id.match(/(\d{4})-(\d{2})[a-z]?$/);
+            status = v ? `${v[2]}/${v[1]} sürümü` : "Kurulu";
+            if (i.search) sel.add(new Option(i.name, b.id));
+          }
+        }
+      }
+      if (url) ready++;
+      const icon = !url ? "fold gray" : "fold";
+      const name = url ? `<a href="${esc(url)}" class="fname">${esc(i.name)}</a>` : `<span class="fname">${esc(i.name)}</span>`;
+      const statusHtml = (!url && i.zim)
+        ? `${esc(status)} &middot; <a href="/setup?select=${encodeURIComponent(i.zim)}">Yükle &raquo;</a>`
+        : esc(status);
+      html += `<tr class="${url ? "" : "off"}">
+        <td class="row1 c" width="40"><i class="${icon}"></i></td>
+        <td class="row1">${name}<div class="fdesc">${esc(i.desc)}</div></td>
+        <td class="row2 c hide-s">${esc(i.lang)}</td>
+        <td class="row2 c">${esc(i.size)}</td>
+        <td class="row3 hide-s small">${statusHtml}</td></tr>`;
+    }
+  }
+  // Listede olmayan ama cihazda yüklü ZIM'ler / installed ZIMs not listed above
+  const others = (books || []).filter(b => !used.has(b.id));
+  if (others.length) {
+    html += `<tr><td class="cat" colspan="5">Diğer Kaynaklar</td></tr>`;
+    for (const b of others) {
+      total++; ready++;
+      html += `<tr>
+        <td class="row1 c" width="40"><i class="fold"></i></td>
+        <td class="row1"><a href="${esc(b.href)}" class="fname">${esc(b.title || b.id)}</a><div class="fdesc">${esc(b.id)}</div></td>
+        <td class="row2 c hide-s">—</td><td class="row2 c">—</td>
+        <td class="row3 hide-s small">Kurulu</td></tr>`;
+    }
+  }
+  document.getElementById("forums").insertAdjacentHTML("beforeend", html);
+  if (!sel.options.length) sel.add(new Option("Tüm kütüphane", ""));
+  document.getElementById("stats").innerHTML =
+    `Toplam <b>${total}</b> kaynak var, bunlardan <b>${ready}</b> tanesi kullanıma hazır.
+     Yeni içerik indirmek veya silmek için <a href="/setup"><b>Kurulum &amp; Paket Yönetimi</b></a> sayfasını açın.<br>
+     Bu sayfa internet bağlantısı olmadan çalışır.`;
+}
+
+const d = new Date();
+document.getElementById("now").textContent =
+  "Sunucu saati: " + d.toLocaleDateString("tr-TR") + " " + d.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+
+document.getElementById("search").addEventListener("submit", e => {
+  e.preventDefault();
+  const q = document.getElementById("q").value.trim();
+  const book = document.getElementById("book").value;
+  if (!q) return;
+  location.href = book
+    ? `/kiwix/search?books.name=${encodeURIComponent(book)}&pattern=${encodeURIComponent(q)}`
+    : `/kiwix/search?pattern=${encodeURIComponent(q)}`;
+});
+
+loadBooks().then(render);
+</script>
+</body>
+</html>

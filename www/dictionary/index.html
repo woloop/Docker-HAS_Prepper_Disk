@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAS_PrepperDisk :: Çevrimdışı Kelime Sözlüğü</title>
+<style>
+  body{margin:0;background:#E5E5E5;color:#000;font-family:Verdana,Tahoma,Arial,sans-serif;font-size:11px}
+  a{color:#006699;text-decoration:none}
+  a:hover{color:#DD6900;text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:10px}
+  .bodyline{background:#fff;border:1px solid #98AAB1;padding:8px}
+
+  /* başlık */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 10px}
+  .logo{font-family:"Trebuchet MS",Verdana,sans-serif;font-size:26px;font-weight:bold;color:#006699;letter-spacing:-1px;
+    text-shadow:1px 1px 0 #C7D0D7}
+  .logo span{color:#DD6900}
+  .slogan{font-size:11px;color:#555;margin-top:2px}
+  .navlinks{font-size:11px;font-weight:bold}
+  .navlinks a{margin-left:10px}
+  .navlinks a::before{content:"» ";color:#999;font-weight:normal}
+
+  .crumb{font-weight:bold;font-size:12px;margin:8px 2px}
+  .small{font-size:10px;color:#444}
+
+  /* tablolar */
+  .scroll{overflow-x:auto}
+  table.forumline{width:100%;border-collapse:collapse;border:1px solid #006699;background:#fff;margin-bottom:10px}
+  .forumline th{background:linear-gradient(#3F7FAD,#006699);color:#FFA34F;font-size:11px;font-weight:bold;
+    height:24px;padding:0 6px;border:1px solid #fff;border-top:0;white-space:nowrap}
+  .forumline td{padding:6px 8px;border:1px solid #fff;vertical-align:middle}
+  td.cat{background:linear-gradient(#EEF2F5,#C7D0D7);height:22px;font-weight:bold;font-size:12px;letter-spacing:1px;color:#006699}
+  td.row1{background:#EFEFEF}
+  td.row2{background:#DEE3E7}
+  td.row3{background:#D1D7DC}
+  td.c{text-align:center}
+
+  /* butonlar & girdiler */
+  .btn{font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;background:#FAFAFA;border:1px solid #444;padding:4px 10px;cursor:pointer;color:#000}
+  .btn:hover{background:#FFF3D6;border-color:#006699}
+  .btn-primary{background:linear-gradient(#3F7FAD,#006699);color:#fff;border:1px solid #003F5E;padding:4px 14px}
+  .btn-primary:hover{background:linear-gradient(#4E8FBD,#0077B3);color:#FFA34F}
+  .btn-sm{padding:2px 6px;font-size:10px;font-weight:normal}
+
+  select, input[type=text]{font-family:Verdana,sans-serif;font-size:12px;border:1px solid #7F9DB9;padding:4px 7px;background:#fff}
+
+  .alpha-bar{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;padding-top:6px;border-top:1px solid #D1D7DC}
+  .alpha-btn{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;background:#fff;border:1px solid #98AAB1;
+    padding:2px 5px;cursor:pointer;color:#006699;min-width:22px;text-align:center}
+  .alpha-btn:hover,.alpha-btn.active{background:#006699;color:#fff;border-color:#003F5E}
+
+  .hw-word{font-size:13px;font-weight:bold;color:#006699;cursor:pointer}
+  .hw-word:hover{color:#DD6900;text-decoration:underline}
+  .hw-pron{font-size:10px;color:#666;font-family:monospace;margin-left:5px}
+  .dir-tag{display:inline-block;padding:1px 5px;font-size:10px;font-weight:bold;background:#E2E8F0;color:#1A365D;border:1px solid #CBD5E0;border-radius:2px;white-space:nowrap}
+  .def-word{font-size:12px;color:#111;line-height:1.45}
+  .def-link{color:#111;text-decoration:none;border-bottom:1px dotted #888;cursor:pointer}
+  .def-link:hover{color:#DD6900;border-bottom-color:#DD6900}
+
+  .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
+
+  @media (max-width:640px){
+    .hide-s{display:none}
+    .logo{font-size:22px}
+  }
+
+  .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
+  .docker-tag svg{width:14px;height:14px;fill:#006699}
+
+</style>
+</head>
+<body>
+<div class="wrap"><div class="bodyline">
+
+  <div class="top">
+    <div>
+      <div class="logo"><a href="/home" style="color:inherit;text-decoration:none">HAS_<span>Prepper</span>Disk</a>
+        <span class="docker-tag"><svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.186.185.186zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.714h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm-2.928 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm21.618 1.409c-.37-.215-1.004-.341-1.647-.354-.082-.41-.304-.77-.66-.998-.679-.434-1.614-.4-2.29.073-.393-.779-1.246-1.272-2.179-1.258-.093 0-.188.005-.28.016v-.668c0-.306-.247-.554-.553-.554H.553C.247 6.64 0 6.888 0 7.194v5.485c0 2.297.868 4.437 2.443 6.027C4.018 20.295 6.136 21.18 8.411 21.18c5.44 0 9.851-4.41 9.851-9.851 0-.11-.004-.219-.01-.328.704-.42 1.543-.591 2.378-.36.425.118.81.334 1.127.632.428-.466.82-.973 1.168-1.517-.384-.214-.766-.4-1.123-.554z"/></svg>DOCKERIZED</span></div>
+      <div class="slogan">Çevrimdışı Kelime Sözlüğü (Kelimesi Kelimesine Çift Yönlü Sözlük)</div>
+    </div>
+    <div class="navlinks">
+      <a href="/home">Ana Sayfa</a><a href="/dictionary">Sözlük</a><a href="/translate">Çeviri</a><a href="/docs">Belgeler</a><a href="/kiwix/">Kütüphane</a><a href="/setup">Kurulum</a>
+    </div>
+  </div>
+
+  <div class="crumb">
+    <a href="/home">HAS_PrepperDisk Ana Sayfa</a> &raquo; <a href="/dictionary">Çevrimdışı Kelime Sözlüğü</a>
+  </div>
+
+  <!-- 1. SADE KELİME ARAMA KUTUSU -->
+  <table class="forumline">
+    <tr>
+      <th>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span>Kelime Ara</span>
+          <span class="small" style="color:#FFA34F;font-weight:normal" id="dict-summary">Sözlükler yükleniyor...</span>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <td class="row1">
+        <form id="dict-search-form" onsubmit="event.preventDefault(); runSearch();" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="dict-q" placeholder="Kelime yazın: kitap, book, su, water, ev, house, iyi, good..." style="flex:1;min-width:220px" oninput="onQueryInput()" autofocus>
+          <select id="dict-pack" onchange="runSearch()" title="Sözlük Seçin">
+            <option value="all">Tüm Kurulu Sözlükler</option>
+          </select>
+          <select id="dict-dir" onchange="runSearch()" title="Çeviri Yönü">
+            <option value="all">Çift Yönlü (Tümü)</option>
+            <option value="to_tr">Yabancı Dil &rarr; Türkçe</option>
+            <option value="from_tr">Türkçe &rarr; Yabancı Dil</option>
+          </select>
+          <button type="submit" class="btn btn-primary">Ara</button>
+          <button type="button" class="btn" onclick="resetSearch()">Temizle</button>
+          <a href="/setup#dictionaries" class="btn btn-sm" style="margin-left:auto;text-decoration:none" title="Kurulum sayfasından yeni dil sözlüğü indir">
+            + Sözlük İndir (/setup)
+          </a>
+        </form>
+
+        <!-- Harf Dizini -->
+        <div class="alpha-bar" id="alpha-bar"></div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 2. KELİME TABLOSU -->
+  <div class="scroll">
+  <table class="forumline">
+    <thead>
+      <tr>
+        <th width="26%">Kelime</th>
+        <th width="110" class="c">Yön</th>
+        <th>Anlamı / Kelime Karşılığı <span class="small" style="color:#eee;font-weight:normal" id="search-meta"></span></th>
+      </tr>
+    </thead>
+    <tbody id="dict-results-body">
+      <tr><td colspan="3" class="row1 c" style="padding:14px">Sözlük yükleniyor...</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="copy">
+    HAS_PrepperDisk &copy; 2026 &middot; Çevrimdışı Çift Yönlü Kelime Sözlüğü<br>
+    Tablodaki herhangi bir kelimenin üzerine tıklayarak o kelimenin karşılıklarına anında geçebilirsiniz.
+  </div>
+
+</div></div>
+
+<script>
+const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const ALPHABET = ["A","B","C","Ç","D","E","F","G","H","I","İ","J","K","L","M","N","O","Ö","P","R","S","Ş","T","U","Ü","V","W","Y","Z"];
+let searchTimer = null;
+let searchAbortCtrl = null;
+let activeLetter = "";
+
+function renderAlphaBar() {
+  const bar = document.getElementById("alpha-bar");
+  bar.innerHTML = ALPHABET.map(ch =>
+    `<button type="button" class="alpha-btn ${activeLetter === ch ? 'active' : ''}" onclick="selectLetter('${ch}')">${ch}</button>`
+  ).join("");
+}
+
+function selectLetter(ch) {
+  activeLetter = ch;
+  renderAlphaBar();
+  const input = document.getElementById("dict-q");
+  input.value = ch === "I" ? "ı" : (ch === "İ" ? "i" : ch.toLocaleLowerCase("tr-TR"));
+  runSearch();
+}
+
+async function loadDictStatus() {
+  try {
+    const r = await fetch("/api/dictionary/status");
+    const data = await r.json();
+    const packs = data.packs || [];
+    const installed = packs.filter(p => p.installed);
+
+    document.getElementById("dict-summary").textContent =
+      installed.length > 0
+        ? `${installed.map(p => p.lang).join(" · ")} (${(data.total_entries || 0).toLocaleString("tr-TR")} kelime)`
+        : "Henüz sözlük indirilmedi";
+
+    const sel = document.getElementById("dict-pack");
+    const cur = sel.value || "all";
+    sel.innerHTML = `<option value="all">Tüm Kurulu Sözlükler (${installed.length})</option>`;
+    for (const p of installed) {
+      sel.add(new Option(`${p.name} (${p.lang})`, p.id));
+    }
+    sel.value = cur;
+  } catch (e) {}
+}
+
+function onQueryInput() {
+  activeLetter = "";
+  renderAlphaBar();
+  if (searchTimer) clearTimeout(searchTimer);
+  searchTimer = setTimeout(runSearch, 150);
+}
+
+function lookupWord(w) {
+  activeLetter = "";
+  renderAlphaBar();
+  const input = document.getElementById("dict-q");
+  input.value = w;
+  document.getElementById("dict-dir").value = "all";
+  runSearch();
+}
+
+function resetSearch() {
+  activeLetter = "";
+  renderAlphaBar();
+  document.getElementById("dict-q").value = "";
+  document.getElementById("dict-dir").value = "all";
+  runSearch();
+}
+
+async function runSearch() {
+  if (searchAbortCtrl) searchAbortCtrl.abort();
+  searchAbortCtrl = new AbortController();
+
+  const q = document.getElementById("dict-q").value.trim();
+  const pack_id = document.getElementById("dict-pack").value || "all";
+  const direction = document.getElementById("dict-dir").value || "all";
+  const tbody = document.getElementById("dict-results-body");
+  const metaEl = document.getElementById("search-meta");
+
+  const params = new URLSearchParams({ q, pack_id, direction, limit: "100" });
+
+  try {
+    const r = await fetch(`/api/dictionary/search?${params.toString()}`, { signal: searchAbortCtrl.signal });
+    const data = await r.json();
+    const items = data.items || [];
+    metaEl.textContent = `(${items.length} kelime · ${data.elapsed_ms || 0} ms)`;
+
+    if (!items.length) {
+      tbody.innerHTML = `<tr><td colspan="3" class="row1 c" style="padding:16px">
+        <b>"${esc(q)}"</b> için eşleşen kelime bulunamadı.
+        <div class="small" style="margin-top:6px">
+          Yeni dil sözlükleri indirmek için <a href="/setup#dictionaries"><b>Kurulum (/setup)</b></a> sayfasını açabilirsiniz.
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = items.map((item, idx) => {
+      const rowCls = (idx % 2 === 0) ? "row1" : "row2";
+      const pronHtml = item.pron ? `<span class="hw-pron">/${esc(item.pron)}/</span>` : "";
+      // Karşılık kelimelerini tıklanabilir yap
+      const parts = (item.definition || "").split(",").map(s => s.trim()).filter(Boolean);
+      const defHtml = parts.map(p =>
+        `<span class="def-link" onclick="lookupWord('${esc(p.replace(/'/g, "\\'"))}')">${esc(p)}</span>`
+      ).join(", ");
+
+      return `<tr>
+        <td class="${rowCls}">
+          <span class="hw-word" onclick="lookupWord('${esc(item.headword.replace(/'/g, "\\'"))}')">${esc(item.headword)}</span>${pronHtml}
+        </td>
+        <td class="${rowCls} c">
+          <span class="dir-tag">${esc(item.lang_pair)}</span>
+        </td>
+        <td class="${rowCls} def-word">${defHtml}</td>
+      </tr>`;
+    }).join("");
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    tbody.innerHTML = `<tr><td colspan="3" class="row1 c">Sözlük sorgulanırken hata oluştu.</td></tr>`;
+  }
+}
+
+renderAlphaBar();
+const urlParams = new URLSearchParams(location.search);
+if (urlParams.get("q")) {
+  document.getElementById("dict-q").value = urlParams.get("q");
+}
+loadDictStatus().then(runSearch);
+</script>
+</body>
+</html>

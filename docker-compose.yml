@@ -1,0 +1,20 @@
+services:
+  has-prepper-disk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: has-prepper-disk
+    ports:
+      - "${PORT:-7572}:7572"
+    volumes:
+      - "${PREPPER_LIBRARY_PATH:-./library}:/library"
+      - "./config:/opt/prepper/config"
+    environment:
+      - PREPPER_PORT=7572
+      - KIWIX_PORT=8081
+      - PREPPER_LIBRARY_DIR=/library
+      - PREPPER_ZIM_DIR=/library/zims/content
+      - PREPPER_LIBRARY_XML=/library/zims/library.xml
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-prepper}
+      - TZ=${TZ:-Europe/Istanbul}
+    restart: unless-stopped

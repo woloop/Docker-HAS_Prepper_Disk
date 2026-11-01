@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAS_PrepperDisk :: Kurulum Sihirbazı ve Paket Yönetimi</title>
+<style>
+  body{margin:0;background:#E5E5E5;color:#000;font-family:Verdana,Tahoma,Arial,sans-serif;font-size:11px}
+  a{color:#006699;text-decoration:none}
+  a:hover{color:#DD6900;text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:10px}
+  .bodyline{background:#fff;border:1px solid #98AAB1;padding:8px}
+
+  /* başlık */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 10px}
+  .logo{font-family:"Trebuchet MS",Verdana,sans-serif;font-size:26px;font-weight:bold;color:#006699;letter-spacing:-1px;
+    text-shadow:1px 1px 0 #C7D0D7}
+  .logo span{color:#DD6900}
+  .slogan{font-size:11px;color:#555;margin-top:2px}
+  .navlinks{font-size:11px;font-weight:bold}
+  .navlinks a{margin-left:10px}
+  .navlinks a::before{content:"» ";color:#999;font-weight:normal}
+
+  .crumb{font-weight:bold;font-size:12px;margin:8px 2px}
+  .small{font-size:10px;color:#444}
+
+  /* tablolar */
+  .scroll{overflow-x:auto}
+  table.forumline{width:100%;border-collapse:collapse;border:1px solid #006699;background:#fff;margin-bottom:10px}
+  .forumline th{background:linear-gradient(#3F7FAD,#006699);color:#FFA34F;font-size:11px;font-weight:bold;
+    height:24px;padding:0 6px;border:1px solid #fff;border-top:0;white-space:nowrap}
+  .forumline td{padding:5px 6px;border:1px solid #fff}
+  td.cat{background:linear-gradient(#EEF2F5,#C7D0D7);height:22px;font-weight:bold;font-size:12px;letter-spacing:1px;color:#006699}
+  td.row1{background:#EFEFEF}
+  td.row2{background:#DEE3E7}
+  td.row3{background:#D1D7DC}
+  td.c{text-align:center}
+  .fname{font-size:12px;font-weight:bold;color:#006699}
+  .fdesc{font-size:11px;color:#222;margin-top:2px}
+  .fmeta{font-size:10px;color:#666;margin-top:2px;font-family:monospace}
+  .off .fname{color:#444}
+  tr.selected-row td.row1{background:#FFF8E6}
+  tr.selected-row td.row2{background:#F5EBD0}
+
+  /* klasör ikonları */
+  .fold{display:inline-block;position:relative;width:22px;height:16px;margin-top:4px;
+    background:linear-gradient(#FFE38A,#F2B935);border:1px solid #B07F12;border-radius:1px}
+  .fold::before{content:"";position:absolute;left:-1px;top:-5px;width:9px;height:4px;background:#F7CF5C;
+    border:1px solid #B07F12;border-bottom:0;border-radius:2px 2px 0 0}
+  .fold.new::after{content:"";position:absolute;right:-4px;top:-4px;width:7px;height:7px;background:#E2451D;
+    border:1px solid #fff;border-radius:50%}
+  .fold.gray{background:linear-gradient(#E6E6E6,#B9B9B9);border-color:#888}
+  .fold.gray::before{background:#D3D3D3;border-color:#888}
+
+  /* butonlar */
+  .btn{font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;background:#FAFAFA;border:1px solid #444;padding:3px 8px;cursor:pointer;color:#000}
+  .btn:hover{background:#FFF3D6;border-color:#006699}
+  .btn-primary{background:linear-gradient(#3F7FAD,#006699);color:#fff;border:1px solid #003F5E;padding:4px 12px}
+  .btn-primary:hover{background:linear-gradient(#4E8FBD,#0077B3);color:#FFA34F}
+  .btn-danger{background:#FFF0F0;color:#990000;border-color:#990000;font-weight:normal;padding:2px 6px;font-size:10px}
+  .btn-danger:hover{background:#FFD6D6}
+  .btn-sm{padding:2px 6px;font-size:10px;font-weight:normal}
+
+  /* ilerleme çubuğu */
+  .pbar-wrap{width:100%;height:16px;background:#D1D7DC;border:1px solid #7F9DB9;position:relative;overflow:hidden}
+  .pbar-fill{height:100%;background:linear-gradient(#4FA3D1,#006699);transition:width .3s}
+  .pbar-fill.orange{background:linear-gradient(#FFA34F,#DD6900)}
+  .pbar-text{position:absolute;top:0;left:0;right:0;bottom:0;text-align:center;line-height:16px;font-size:10px;font-weight:bold;color:#000;text-shadow:0 0 2px #fff}
+
+  /* durum etiketleri */
+  .badge{display:inline-block;padding:1px 5px;font-size:10px;font-weight:bold;border-radius:2px}
+  .b-ok{background:#D4EDDA;color:#155724;border:1px solid #A3CFBB}
+  .b-dl{background:#FFF3CD;color:#856404;border:1px solid #FFEEBA}
+  .b-wait{background:#E2E3E5;color:#383D41;border:1px solid #C6C8CA}
+  .b-warn{background:#F8D7DA;color:#721C24;border:1px solid #F5C6CB}
+
+  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:4px 0}
+  .preset-group{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+
+  .legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:4px 2px 10px}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .legend .fold{margin-top:0;transform:scale(.8)}
+
+  .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
+
+  @media (max-width:640px){
+    .hide-s{display:none}
+    .logo{font-size:22px}
+    .stack-s td{display:block;width:auto !important}
+    .toolbar{flex-direction:column;align-items:stretch}
+    .preset-group{justify-content:flex-start}
+  }
+
+  .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
+  .docker-tag svg{width:14px;height:14px;fill:#006699}
+
+</style>
+</head>
+<body>
+<div class="wrap"><div class="bodyline">
+
+  <div class="top">
+    <div>
+      <div class="logo"><a href="/home" style="color:inherit;text-decoration:none">HAS_<span>Prepper</span>Disk</a>
+        <span class="docker-tag"><svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.186.185.186zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.714h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm-2.928 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm21.618 1.409c-.37-.215-1.004-.341-1.647-.354-.082-.41-.304-.77-.66-.998-.679-.434-1.614-.4-2.29.073-.393-.779-1.246-1.272-2.179-1.258-.093 0-.188.005-.28.016v-.668c0-.306-.247-.554-.553-.554H.553C.247 6.64 0 6.888 0 7.194v5.485c0 2.297.868 4.437 2.443 6.027C4.018 20.295 6.136 21.18 8.411 21.18c5.44 0 9.851-4.41 9.851-9.851 0-.11-.004-.219-.01-.328.704-.42 1.543-.591 2.378-.36.425.118.81.334 1.127.632.428-.466.82-.973 1.168-1.517-.384-.214-.766-.4-1.123-.554z"/></svg>DOCKERIZED</span></div>
+      <div class="slogan">Web Kurulum Sihirbazı ve Çevrimdışı Paket Yöneticisi</div>
+    </div>
+    <div class="navlinks">
+      <a href="/home">Ana Sayfa</a><a href="/dictionary">Sözlük</a><a href="/translate">Çeviri</a><a href="/docs">Belgeler</a><a href="/kiwix/">Kütüphane</a><a href="/setup">Kurulum</a>
+    </div>
+  </div>
+
+  <div class="crumb">
+    <a href="/home">HAS_PrepperDisk Ana Sayfa</a> &raquo; <a href="/setup">Kurulum Sihirbazı ve Paket Yönetimi</a>
+  </div>
+
+  <!-- 1. SİSTEM VE DEPOLAMA DURUMU -->
+  <table class="forumline stack-s">
+    <tr><th colspan="2">Depolama ve Sistem Durumu</th></tr>
+    <tr>
+      <td class="row1" width="60%">
+        <div style="margin-bottom:4px">
+          <b>Kütüphane Dizini:</b> <code id="disk-path">/library</code> &nbsp;|&nbsp;
+          <b>Boş Alan:</b> <span id="disk-free" style="font-weight:bold;color:#006699">—</span>
+          (<span id="disk-used">—</span> kullanıldı / Toplam <span id="disk-total">—</span>)
+        </div>
+        <div class="pbar-wrap">
+          <div class="pbar-fill" id="disk-bar" style="width:0%"></div>
+          <div class="pbar-text" id="disk-bar-text">Disk kontrol ediliyor...</div>
+        </div>
+      </td>
+      <td class="row2">
+        <div><b>Kurulu Arşiv:</b> <span id="stat-installed">0</span> paket kullanıma hazır</div>
+        <div style="margin-top:3px"><b>Kiwix Sunucusu:</b> <span id="stat-kiwix">Kontrol ediliyor...</span></div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 2. CANLI İNDİRME PANELİ (PARALEL ÇOKLU İNDİRME) -->
+  <table class="forumline" id="dl-panel" style="display:none">
+    <tr>
+      <th colspan="2">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span>Canlı Paralel İndirme ve Kurulum Takibi (<span id="dl-active-count">0</span> aktif)</span>
+          <span>Toplam Hız: <span id="dl-total-speed">—</span></span>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <td class="row1" colspan="2">
+        <div id="dl-active-list"></div>
+
+        <div id="dl-all-actions" style="display:none;text-align:right;margin-top:4px;margin-bottom:6px">
+          <button class="btn btn-sm" onclick="cancelDownload(null, false)">Tümünü Duraklat</button>
+          <button class="btn btn-danger" onclick="cancelDownload(null, true)">Tümünü İptal Et &amp; Sil</button>
+        </div>
+
+        <div id="dl-queue-box" style="display:none;margin-top:6px">
+          <b>Sırada Bekleyenler (<span id="dl-queue-count">0</span>):</b>
+          <span id="dl-queue-list" class="small"></span>
+        </div>
+
+        <div id="dl-history-box" style="display:none;margin-top:6px;border-top:1px solid #ccc;padding-top:4px">
+          <b>Son İşlemler:</b>
+          <div id="dl-history-list" class="small" style="max-height:80px;overflow-y:auto;margin-top:2px"></div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 3. HIZLI SEÇİM, BAŞLATMA VE TOPLU SİLME ÇUBUĞU -->
+  <table class="forumline">
+    <tr><td class="cat">Adım 1: Paketleri Seçin &mdash; Toplu İndirin veya Toplu Silin</td></tr>
+    <tr>
+      <td class="row1">
+        <div class="toolbar">
+          <div class="preset-group">
+            <b>Hızlı Seçim:</b>
+            <button type="button" class="btn btn-sm" onclick="selectPreset('essential')">Temel Hazırlık (~15 GB)</button>
+            <button type="button" class="btn btn-sm" onclick="selectPreset('mini')">Mini Hayatta Kalma (~1.2 GB)</button>
+            <button type="button" class="btn btn-sm" onclick="selectPreset('conf')">Varsayılan Liste (~140 GB)</button>
+            <button type="button" class="btn btn-sm" onclick="selectPreset('installed')" title="Diskte yer açmak için kurulu tüm paketleri seçer">Kurulu Olanları Seç</button>
+            <button type="button" class="btn btn-sm" onclick="selectPreset('none')">Seçimi Temizle</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <label class="small"><b>Paralel İndirme:</b>
+              <select id="sel-concurrency" onchange="updateConcurrency(this.value)" style="font-size:11px;padding:1px 3px">
+                <option value="1">1 kaynak</option>
+                <option value="2">2 kaynak</option>
+                <option value="3" selected>3 kaynak</option>
+                <option value="4">4 kaynak</option>
+                <option value="6">6 kaynak</option>
+              </select>
+            </label>
+            <span id="sel-summary">Seçilen: <b>0</b> paket (<b>0 B</b>)</span>
+            <button type="button" class="btn btn-primary" id="btn-start" onclick="startSelectedDownloads()">
+              » Seçilen Paketleri İndir ve Kur
+            </button>
+            <button type="button" class="btn btn-danger" id="btn-bulk-delete" onclick="bulkDeleteSelected()" style="padding:4px 10px;font-weight:bold;display:none">
+              Seçilenleri Toplu Sil (0)
+            </button>
+          </div>
+        </div>
+        <div id="space-warning" style="display:none;margin-top:6px;padding:4px 8px;background:#F8D7DA;border:1px solid #F5C6CB;color:#721C24;font-weight:bold">
+          ⚠️ Uyarı: Seçtiğiniz paketlerin tahmini boyutu kullanılabilir boş disk alanından fazla!
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 4. İÇERİK KATALOĞU TABLOSU -->
+  <div class="scroll">
+  <table class="forumline" id="catalog-table">
+    <thead>
+      <tr>
+        <th width="30"><input type="checkbox" id="chk-all" onchange="toggleAll(this.checked)" title="Tümünü Seç/Bırak"></th>
+        <th width="36"></th>
+        <th>Paket / İçerik Açıklaması</th>
+        <th class="hide-s" width="55">Dil</th>
+        <th width="85">Boyut</th>
+        <th width="210">Durum ve İşlem</th>
+      </tr>
+    </thead>
+    <tbody id="catalog-body">
+      <tr><td colspan="6" class="row1 c" style="padding:15px">Katalog yükleniyor...</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="legend small">
+    <span><i class="fold"></i> Kurulu ve Hazır</span>
+    <span><i class="fold new"></i> İndiriliyor / Yarım Kalan (.part)</span>
+    <span><i class="fold gray"></i> Henüz Yüklenmedi</span>
+  </div>
+
+  <!-- 5. ÇEVRİMDIŞI SÖZLÜK SİSTEMİ PAKETLERİ (SQLite / FreeDict & Saha Sözlüğü) -->
+  <div class="scroll" id="dictionaries">
+  <table class="forumline">
+    <thead>
+      <tr>
+        <th colspan="5">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+            <span>Çevrimdışı Sözlük Sistemi Paketleri (/dictionary İçin İndirilebilir Sözlükler)</span>
+            <div>
+              <button type="button" class="btn btn-sm" onclick="downloadDictPacks(['eng_tur'])">» İngilizce↔Türkçe Sözlük İndir</button>
+              <a href="/dictionary" class="btn btn-sm" style="margin-left:4px;text-decoration:none">» Sözlük Sayfasını Aç</a>
+            </div>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td class="cat" width="85">Dil Çifti</td>
+        <td class="cat">Sözlük Adı ve Kapsamı</td>
+        <td class="cat c hide-s" width="95">Kelime Sayısı</td>
+        <td class="cat c" width="85">Boyut</td>
+        <td class="cat c" width="195">Durum ve İşlem</td>
+      </tr>
+    </thead>
+    <tbody id="setup-dicts-body">
+      <tr><td colspan="5" class="row1 c">Sözlük paketleri yükleniyor...</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- 6. ÇEVRİMDIŞI ÇOK DİLLİ ÇEVİRİ MODELLERİ (Argos / CTranslate2) -->
+  <div class="scroll" id="translators">
+  <table class="forumline">
+    <thead>
+      <tr>
+        <th colspan="4">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+            <span>Çok Dilli Çevrimdışı Yapay Zeka Çeviri Paketleri (/translate İçin Dil Modelleri)</span>
+            <a href="/translate" class="btn btn-sm" style="text-decoration:none">» Çeviri Aracını Aç</a>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td class="cat" width="60">Kod</td>
+        <td class="cat">Dil Adı ve Çeviri Yönü</td>
+        <td class="cat c" width="90">Boyut</td>
+        <td class="cat c" width="195">Durum ve İşlem</td>
+      </tr>
+    </thead>
+    <tbody id="setup-langs-body">
+      <tr><td colspan="4" class="row1 c">Çeviri modelleri yükleniyor...</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- 7. ÖZEL .ZIM DOSYASI YÜKLEME VEYA HARİCİ URL'DEN İNDİRME -->
+  <table class="forumline" id="custom-zim">
+    <thead>
+      <tr>
+        <th colspan="2">Özel .ZIM Arşivi Ekle (Harici URL'den İndir veya Yerel Dosya Yükle)</th>
+      </tr>
+      <tr>
+        <td class="cat" width="50%">Harici URL'den Doğrudan İndir (.zim)</td>
+        <td class="cat" width="50%">Bilgisayardan / Telefondan .ZIM Dosyası Yükle</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row1" style="vertical-align:top">
+          <div class="small" style="margin-bottom:6px">Katalogda yer almayan herhangi bir Kiwix <code>.zim</code> dosyasının doğrudan indirme bağlantısını yapıştırın:</div>
+          <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap">
+            <input type="text" id="custom-zim-url" placeholder="https://download.kiwix.org/zim/.../dosya.zim" style="flex:1;min-width:180px;padding:3px 6px;border:1px solid #999;font-size:11px">
+            <input type="text" id="custom-zim-name" placeholder="Görünen Ad (İsteğe bağlı)" style="width:150px;padding:3px 6px;border:1px solid #999;font-size:11px">
+          </div>
+          <button class="btn btn-primary" onclick="startCustomUrlDownload()">» URL'den İndirmeyi Başlat</button>
+        </td>
+        <td class="row2" style="vertical-align:top">
+          <div class="small" style="margin-bottom:6px">Cihazınızda bulunan bir <code>.zim</code> dosyasını doğrudan kütüphaneye aktarın (otomatik indekslenir):</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <input type="file" id="custom-zim-file" accept=".zim" style="font-size:11px">
+            <button class="btn btn-primary" onclick="uploadLocalZimFile()">» .ZIM Dosyasını Yükle</button>
+            <span id="custom-zim-upload-status" class="small"></span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 8. ÇEVRİMDIŞI HARİTA VE HOTSPOT CAPTIVE PORTAL YÖNETİMİ -->
+  <table class="forumline" id="maps-panel">
+    <thead>
+      <tr>
+        <th colspan="2">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+            <span>Çevrimdışı Harita ve Hotspot Captive Portal (Wi-Fi Karşılama Ekranı) Yönetimi</span>
+            <a href="/maps" class="btn btn-sm" style="text-decoration:none">» Harita Sayfasını Aç (/maps)</a>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td class="cat" width="55%">🗺️ Çevrimdışı OpenStreetMap Vektör Haritası (Türkiye ~1.7 GB)</td>
+        <td class="cat" width="45%">📶 Hotspot Captive Portal (Wi-Fi Otomatik Karşılama)</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row1" style="vertical-align:top">
+          <div style="margin-bottom:6px"><b>Durum:</b> <span id="map-status-badge"><span class="badge b-wait">Kontrol ediliyor...</span></span></div>
+          <div class="small" style="margin-bottom:8px;line-height:1.45" id="map-status-desc">
+            OpenStreetMap / Protomaps tabanlı sokak seviyesinde çevrimdışı vektör harita. İndirildikten sonra internet olmadan çalışır.
+          </div>
+          <div id="map-action-box">
+            <button class="btn btn-primary" id="btn-map-download" onclick="triggerMapDownload()">» Haritayı İndir / Etkinleştir</button>
+            <button class="btn btn-danger" id="btn-map-delete" onclick="triggerMapDelete()" style="display:none;margin-left:6px">Haritayı Sil</button>
+          </div>
+          <div id="map-progress-box" style="display:none;margin-top:8px">
+            <div class="small" id="map-progress-msg" style="margin-bottom:3px;font-weight:bold;color:#006699"></div>
+            <div class="pbar-wrap" style="height:16px">
+              <div class="pbar-fill orange" id="map-progress-bar" style="width:0%"></div>
+              <div class="pbar-text" id="map-progress-pct">%0</div>
+            </div>
+          </div>
+        </td>
+        <td class="row2" style="vertical-align:top">
+          <div style="margin-bottom:6px"><b>Captive Portal Durumu:</b> <span id="captive-status-badge"><span class="badge b-ok">Açık (Aktif)</span></span></div>
+          <div class="small" style="margin-bottom:8px;line-height:1.45">
+            Cihaz Wi-Fi erişim noktası (Hotspot) olarak yayın yaparken Android, iPhone ve Windows telefonlar ağa bağlandığında otomatik olarak ekranda <b>HAS_PrepperDisk</b> ana sayfasını açar.
+          </div>
+          <div>
+            <button class="btn" id="btn-captive-toggle" onclick="toggleCaptivePortal()">Aç / Kapat (Toggle)</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="copy">
+    HAS_PrepperDisk &copy; 2026 &middot; Docker &amp; Web Kurulum Sürümü<br>
+    İndirmeler <code>download.kiwix.org</code> üzerinden çekilir; yarıda kesilirse kaldığı yerden devam eder.
+  </div>
+
+</div></div>
+
+<script>
+const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function fmtBytes(b) {
+  if (!b || b <= 0) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let i = 0, val = b;
+  while (val >= 1024 && i < units.length - 1) { val /= 1024; i++; }
+  return (i === 0 ? val : val.toFixed(1)) + " " + units[i];
+}
+
+function fmtEta(sec) {
+  if (sec === null || sec === undefined || sec < 0) return "hesaplanıyor...";
+  if (sec < 60) return sec + " sn";
+  const m = Math.floor(sec / 60), s = sec % 60;
+  if (m < 60) return `${m} dk ${s} sn`;
+  const h = Math.floor(m / 60), rm = m % 60;
+  return `${h} sa ${rm} dk`;
+}
+
+let catalogItems = [];
+let diskInfo = { free_bytes: 0, total_bytes: 0, used_bytes: 0 };
+let selectedPrefixes = new Set();
+let initialSelectionDone = false;
+
+const PRESETS = {
+  essential: [
+    "wikipedia_tr_all_maxi", "wiktionary_tr_all_nopic", "ifixit_tr_all", "wikibooks_tr_all_maxi",
+    "zimgit-post-disaster_en", "zimgit-water_en", "zimgit-food-preparation_en",
+    "zimgit-knots_en", "ready.gov_en_all", "solar.lowtechmagazine.com_mul_all",
+    "wikipedia_en_medicine_maxi", "mdwiki_en_all_maxi", "medlineplus.gov_en_all", "zimgit-medicine_en",
+    "irp.fas.org_en_military-medicine", "nhs.uk_en_medicines",
+    "ifixit_en_all", "appropedia_en_all_maxi"
+  ],
+  mini: [
+    "zimgit-water_en", "zimgit-food-preparation_en", "zimgit-knots_en",
+    "zimgit-post-disaster_en", "zimgit-medicine_en", "wikibooks_tr_all_maxi",
+    "irp.fas.org_en_military-medicine", "nhs.uk_en_medicines"
+  ]
+};
+
+let catalogInFlight = false;
+async function fetchCatalog() {
+  if (catalogInFlight) return;
+  catalogInFlight = true;
+  try {
+    const r = await fetch("/api/catalog");
+    const data = await r.json();
+    catalogItems = data.items || [];
+    diskInfo = data.disk || diskInfo;
+
+    if (!initialSelectionDone) {
+      initialSelectionDone = true;
+      const params = new URLSearchParams(location.search);
+      const preselect = params.get("select");
+      if (preselect) {
+        selectedPrefixes.add(preselect);
+      } else {
+        // Hiç kurulu paket yoksa varsayılan olarak yarım kalanları veya Temel paketi seç
+        const anyInstalled = catalogItems.some(i => i.status === "installed");
+        if (!anyInstalled) {
+          for (const i of catalogItems) {
+            if (i.status === "partial" || PRESETS.essential.includes(i.prefix)) {
+              selectedPrefixes.add(i.prefix);
+            }
+          }
+        }
+      }
+    }
+
+    renderDiskAndStatus(data);
+    renderDownloads(data.downloads);
+    renderCatalogTable();
+    updateSelectionSummary();
+    if (data.dictionary) renderSetupDictionaries(data.dictionary);
+    if (data.translator) renderSetupLanguages(data.translator);
+    fetchMapAndCaptiveStatus();
+  } catch (e) {
+    console.error("Katalog okunamadı:", e);
+  } finally {
+    catalogInFlight = false;
+  }
+}
+
+function renderDiskAndStatus(data) {
+  const d = data.disk || {};
+  document.getElementById("disk-path").textContent = d.path || "/library";
+  document.getElementById("disk-free").textContent = d.free_human || "—";
+  document.getElementById("disk-used").textContent = d.used_human || "—";
+  document.getElementById("disk-total").textContent = d.total_human || "—";
+
+  const pct = d.used_percent || 0;
+  document.getElementById("disk-bar").style.width = Math.min(pct, 100) + "%";
+  document.getElementById("disk-bar-text").textContent = `%${pct} Dolu (${d.free_human || ""} Boş)`;
+
+  const instCount = (data.items || []).filter(i => i.status === "installed").length;
+  document.getElementById("stat-installed").textContent = instCount;
+
+  const kiwixEl = document.getElementById("stat-kiwix");
+  if (instCount > 0) {
+    kiwixEl.innerHTML = `<span class="badge b-ok">Aktif</span> <a href="/home">Ana Sayfayı Aç &raquo;</a>`;
+  } else {
+    kiwixEl.innerHTML = `<span class="badge b-wait">Beklemede (Henüz ZIM indirilmedi)</span>`;
+  }
+}
+
+function renderDownloads(dl) {
+  if (!dl) return;
+  const panel = document.getElementById("dl-panel");
+  const activeListEl = document.getElementById("dl-active-list");
+  const allActionsEl = document.getElementById("dl-all-actions");
+  const queueBox = document.getElementById("dl-queue-box");
+  const histBox = document.getElementById("dl-history-box");
+
+  if (dl.max_concurrent) {
+    const selConc = document.getElementById("sel-concurrency");
+    if (selConc && String(dl.max_concurrent) !== selConc.value) {
+      selConc.value = String(dl.max_concurrent);
+    }
+  }
+
+  const activeItems = dl.active_downloads || (dl.active ? [dl.active] : []);
+  const hasActive = activeItems.length > 0;
+  const hasQueue = dl.queue && dl.queue.length > 0;
+  const hasHist = dl.history && dl.history.length > 0;
+
+  if (!hasActive && !hasQueue && !hasHist) {
+    panel.style.display = "none";
+    return;
+  }
+  panel.style.display = "table";
+  document.getElementById("dl-active-count").textContent = activeItems.length;
+  document.getElementById("dl-total-speed").textContent = dl.total_speed_human || "—";
+
+  if (hasActive) {
+    activeListEl.innerHTML = activeItems.map(a => {
+      const pct = a.percent || 0;
+      return `<div style="margin-bottom:8px;padding:6px;background:#FAFAFA;border:1px solid #C7D0D7">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:4px">
+          <div>
+            <span class="badge b-dl">İNDİRİLİYOR</span>
+            <b style="font-size:12px;margin-left:4px">${esc(a.name || a.prefix)}</b>
+            <span class="small" style="font-family:monospace">${a.filename ? "(" + esc(a.filename) + ")" : ""}</span>
+          </div>
+          <div>
+            <b>Hız:</b> <span>${esc(a.speed_human || "—")}</span> &nbsp;|&nbsp;
+            <b>Kalan Süre:</b> <span>${esc(fmtEta(a.eta_seconds))}</span> &nbsp;
+            <button class="btn btn-sm" onclick="cancelDownload('${esc(a.prefix)}', false)" title="Bu indirmeyi duraklat">Duraklat</button>
+            <button class="btn btn-danger" onclick="cancelDownload('${esc(a.prefix)}', true)" title="Bu indirmeyi iptal et ve sil">İptal &amp; Sil</button>
+          </div>
+        </div>
+        <div class="pbar-wrap" style="height:17px">
+          <div class="pbar-fill orange" style="width:${Math.min(pct, 100)}%"></div>
+          <div class="pbar-text">%${pct}</div>
+        </div>
+        <div class="small" style="margin-top:3px">${esc(a.message || "")}</div>
+      </div>`;
+    }).join("");
+    allActionsEl.style.display = (activeItems.length > 1 || hasQueue) ? "block" : "none";
+  } else {
+    activeListEl.innerHTML = "";
+    allActionsEl.style.display = hasQueue ? "block" : "none";
+  }
+
+  if (hasQueue) {
+    queueBox.style.display = "block";
+    document.getElementById("dl-queue-count").textContent = dl.queue.length;
+    document.getElementById("dl-queue-list").innerHTML = dl.queue.map(q =>
+      `<span class="badge b-wait" style="margin-right:4px">${esc(q.name)} <a href="javascript:void(0)" onclick="cancelDownload('${esc(q.prefix)}', false)" style="color:#900;margin-left:3px" title="Kuyruktan çıkar">&times;</a></span>`
+    ).join(" ");
+  } else {
+    queueBox.style.display = "none";
+  }
+
+  if (hasHist) {
+    histBox.style.display = "block";
+    document.getElementById("dl-history-list").innerHTML = dl.history.slice().reverse().map(h => {
+      const cls = h.status === "completed" ? "b-ok" : (h.status === "error" ? "b-warn" : "b-wait");
+      return `<div style="margin-bottom:2px"><span class="badge ${cls}">${esc(h.status.toUpperCase())}</span> <b>${esc(h.name)}:</b> ${esc(h.message)}</div>`;
+    }).join("");
+  } else {
+    histBox.style.display = "none";
+  }
+}
+
+function renderCatalogTable() {
+  const tbody = document.getElementById("catalog-body");
+  if (!catalogItems.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="row1 c">Katalogda öğe bulunamadı.</td></tr>`;
+    return;
+  }
+
+  // Kategorilere göre grupla
+  const groups = new Map();
+  for (const item of catalogItems) {
+    const cat = item.category || "Diğer Kaynaklar";
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat).push(item);
+  }
+
+  let html = "";
+  for (const [catTitle, items] of groups.entries()) {
+    html += `<tr><td class="cat" colspan="6">${esc(catTitle)}</td></tr>`;
+    for (const i of items) {
+      const isChecked = selectedPrefixes.has(i.prefix);
+      const isInstalled = i.status === "installed";
+      const isDownloading = i.status === "downloading";
+      const isQueued = i.status === "queued";
+      const isPartial = i.status === "partial";
+
+      let icon = "fold gray";
+      if (isInstalled) icon = "fold";
+      else if (isDownloading || isQueued || isPartial) icon = "fold new";
+
+      let statusHtml = "";
+      if (isInstalled) {
+        statusHtml = `
+          <span class="badge b-ok">${esc(i.version || "Kurulu")}</span>
+          <a class="btn btn-sm" href="${esc(i.href || '/kiwix/')}">Aç</a>
+          <button class="btn btn-danger" onclick="deletePackage('${esc(i.prefix)}', '${esc(i.name)}')">Sil</button>
+        `;
+      } else if (isDownloading) {
+        statusHtml = `<span class="badge b-dl">İndiriliyor...</span>`;
+      } else if (isQueued) {
+        statusHtml = `
+          <span class="badge b-wait">Sırada</span>
+          <button class="btn btn-sm" onclick="cancelDownload('${esc(i.prefix)}', false)">Çıkar</button>
+        `;
+      } else if (isPartial) {
+        statusHtml = `
+          <span class="badge b-dl">Yarım (${esc(i.partial_human)})</span>
+          <button class="btn btn-sm" onclick="downloadSingle('${esc(i.prefix)}')">Devam Et</button>
+          <button class="btn btn-danger" onclick="deletePackage('${esc(i.prefix)}', '${esc(i.name)}')">Sil</button>
+        `;
+      } else {
+        statusHtml = `
+          <span class="small" style="color:#666">Henüz yüklenmedi</span>
+          <button class="btn btn-sm" style="margin-left:4px" onclick="downloadSingle('${esc(i.prefix)}')">İndir</button>
+        `;
+      }
+
+      const rowCls = isChecked ? "selected-row" : (isInstalled ? "" : "off");
+      const titleHtml = isInstalled
+        ? `<a href="${esc(i.href)}" class="fname">${esc(i.name)}</a>`
+        : `<span class="fname">${esc(i.name)}</span>`;
+
+      html += `<tr class="${rowCls}">
+        <td class="row1 c">
+          <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleItem('${esc(i.prefix)}', this.checked)">
+        </td>
+        <td class="row1 c"><i class="${icon}"></i></td>
+        <td class="row1">
+          ${titleHtml}
+          <div class="fdesc">${esc(i.desc)}</div>
+          <div class="fmeta">${esc(i.folder)} / ${esc(i.prefix)}</div>
+        </td>
+        <td class="row2 c hide-s">${esc(i.lang)}</td>
+        <td class="row2 c">${esc(i.installed_human || i.size)}</td>
+        <td class="row3">${statusHtml}</td>
+      </tr>`;
+    }
+  }
+  tbody.innerHTML = html;
+}
+
+function toggleItem(prefix, checked) {
+  if (checked) selectedPrefixes.add(prefix);
+  else selectedPrefixes.delete(prefix);
+  renderCatalogTable();
+  updateSelectionSummary();
+}
+
+function toggleAll(checked) {
+  selectedPrefixes.clear();
+  if (checked) {
+    for (const i of catalogItems) {
+      selectedPrefixes.add(i.prefix);
+    }
+  }
+  renderCatalogTable();
+  updateSelectionSummary();
+}
+
+function selectPreset(mode) {
+  selectedPrefixes.clear();
+  if (mode === "installed") {
+    for (const i of catalogItems) {
+      if (i.status === "installed" || i.status === "partial") selectedPrefixes.add(i.prefix);
+    }
+  } else if (mode === "conf") {
+    for (const i of catalogItems) {
+      if (i.enabled_in_conf && i.status !== "installed") selectedPrefixes.add(i.prefix);
+    }
+  } else if (PRESETS[mode]) {
+    const allowed = new Set(PRESETS[mode]);
+    for (const i of catalogItems) {
+      if (allowed.has(i.prefix) && i.status !== "installed") selectedPrefixes.add(i.prefix);
+    }
+  }
+  renderCatalogTable();
+  updateSelectionSummary();
+}
+
+function updateSelectionSummary() {
+  let count = 0, totalDownloadBytes = 0, deletableCount = 0, deletableBytes = 0;
+  for (const i of catalogItems) {
+    if (selectedPrefixes.has(i.prefix)) {
+      count++;
+      if (i.status === "installed") {
+        deletableCount++;
+        deletableBytes += (i.installed_bytes || i.size_bytes || 0);
+      } else if (i.status === "partial") {
+        deletableCount++;
+        deletableBytes += (i.partial_bytes || 0);
+        totalDownloadBytes += Math.max(0, (i.size_bytes || 0) - (i.partial_bytes || 0));
+      } else {
+        totalDownloadBytes += (i.size_bytes || 0);
+      }
+    }
+  }
+  document.getElementById("sel-summary").innerHTML =
+    `Seçilen: <b>${count}</b> paket (İndirilecek: <b>${fmtBytes(totalDownloadBytes)}</b>)`;
+
+  const bulkDelBtn = document.getElementById("btn-bulk-delete");
+  if (bulkDelBtn) {
+    if (deletableCount > 0) {
+      bulkDelBtn.style.display = "inline-block";
+      bulkDelBtn.textContent = `Seçilenleri Toplu Sil (${deletableCount} paket · ${fmtBytes(deletableBytes)})`;
+    } else {
+      bulkDelBtn.style.display = "none";
+    }
+  }
+
+  const warn = document.getElementById("space-warning");
+  if (diskInfo.free_bytes > 0 && totalDownloadBytes > diskInfo.free_bytes) {
+    warn.style.display = "block";
+  } else {
+    warn.style.display = "none";
+  }
+}
+
+let adminPasswordCached = localStorage.getItem("prepper_admin_pw") || "";
+
+function getAdminHeaders() {
+  const h = {"Content-Type": "application/json"};
+  if (adminPasswordCached) {
+    h["x-admin-password"] = adminPasswordCached;
+  }
+  return h;
+}
+
+function promptAdminPassword(msg) {
+  const pw = prompt(msg || "Bu işlem için yönetici şifresini girin (varsayılan: prepper):", adminPasswordCached || "");
+  if (pw !== null) {
+    adminPasswordCached = pw.trim();
+    localStorage.setItem("prepper_admin_pw", adminPasswordCached);
+  }
+  return adminPasswordCached;
+}
+
+async function bulkDeleteSelected() {
+  const toDelete = catalogItems.filter(i =>
+    selectedPrefixes.has(i.prefix) && (i.status === "installed" || i.status === "partial" || i.status === "downloading" || i.status === "queued")
+  );
+  if (!toDelete.length) {
+    alert("Silinebilecek kurulu veya yarım kalmış bir paket seçilmedi.");
+    return;
+  }
+  const names = toDelete.map(i => "• " + i.name).join("\n");
+  if (!confirm(`Seçilen ${toDelete.length} paketi diskten toplu olarak silmek istediğinize emin misiniz?\n\n${names}`)) {
+    return;
+  }
+
+  let pw = adminPasswordCached;
+  if (!pw) {
+    pw = promptAdminPassword("Paketleri silmek için yönetici şifresini girin:");
+    if (!pw) return;
+  }
+
+  const prefixes = toDelete.map(i => i.prefix);
+  let r = await fetch("/api/packages/bulk-delete", {
+    method: "POST",
+    headers: getAdminHeaders(),
+    body: JSON.stringify({ prefixes })
+  });
+
+  if (r.status === 401) {
+    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
+    if (!pw) return;
+    r = await fetch("/api/packages/bulk-delete", {
+      method: "POST",
+      headers: getAdminHeaders(),
+      body: JSON.stringify({ prefixes })
+    });
+  }
+
+  if (r.ok) {
+    for (const p of prefixes) selectedPrefixes.delete(p);
+    await fetchCatalog();
+  } else {
+    const err = await r.json().catch(() => ({}));
+    alert("Toplu silme hatası: " + (err.detail || r.statusText));
+  }
+}
+
+async function updateConcurrency(val) {
+  const max_concurrent = parseInt(val, 10) || 3;
+  await fetch("/api/downloads/concurrency", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ max_concurrent })
+  });
+}
+
+async function startSelectedDownloads() {
+  const prefixes = Array.from(selectedPrefixes);
+  if (!prefixes.length) {
+    alert("Lütfen indirmek için en az bir paket seçin.");
+    return;
+  }
+  const max_concurrent = parseInt(document.getElementById("sel-concurrency").value, 10) || 3;
+  const r = await fetch("/api/downloads/start", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ prefixes, save_to_conf: true, max_concurrent })
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    alert("Hata: " + (err.detail || r.statusText));
+    return;
+  }
+  await fetchCatalog();
+}
+
+async function downloadSingle(prefix) {
+  selectedPrefixes.add(prefix);
+  const max_concurrent = parseInt(document.getElementById("sel-concurrency").value, 10) || 3;
+  const r = await fetch("/api/downloads/start", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ prefixes: [prefix], save_to_conf: true, max_concurrent })
+  });
+  if (r.ok) await fetchCatalog();
+}
+
+async function cancelDownload(prefix, deletePartial) {
+  if (deletePartial && !confirm("İndirme iptal edilecek ve geçici (.part) dosya silinecek. Emin misiniz?")) {
+    return;
+  }
+  await fetch("/api/downloads/cancel", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ prefix, delete_partial: deletePartial })
+  });
+  await fetchCatalog();
+}
+
+async function deletePackage(prefix, name) {
+  if (!confirm(`"${name}" paketini diskten silmek istediğinize emin misiniz?`)) {
+    return;
+  }
+  let pw = adminPasswordCached;
+  if (!pw) {
+    pw = promptAdminPassword("Paketi silmek için yönetici şifresini girin:");
+    if (!pw) return;
+  }
+  let r = await fetch(`/api/packages/${encodeURIComponent(prefix)}`, {
+    method: "DELETE",
+    headers: getAdminHeaders()
+  });
+  if (r.status === 401) {
+    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
+    if (!pw) return;
+    r = await fetch(`/api/packages/${encodeURIComponent(prefix)}`, {
+      method: "DELETE",
+      headers: getAdminHeaders()
+    });
+  }
+  if (r.ok) {
+    selectedPrefixes.delete(prefix);
+    await fetchCatalog();
+  } else {
+    const err = await r.json().catch(() => ({}));
+    alert("Silme hatası: " + (err.detail || r.statusText));
+  }
+}
+
+let dictOrLangDownloading = false;
+
+function renderSetupDictionaries(dictData) {
+  const tbody = document.getElementById("setup-dicts-body");
+  if (!tbody) return;
+  const packs = dictData.packs || [];
+  let anyDl = false;
+
+  tbody.innerHTML = packs.map(p => {
+    let statusHtml = "";
+    if (p.downloading && p.download_state) {
+      anyDl = true;
+      const st = p.download_state;
+      statusHtml = `
+        <span class="badge b-dl">İndiriliyor (${esc(st.speed_human)})</span>
+        <div class="pbar-wrap" style="margin-top:3px"><div class="pbar-fill orange" style="width:${Math.min(st.percent || 0, 100)}%"></div><div class="pbar-text">%${st.percent || 0}</div></div>
+      `;
+    } else if (p.installed) {
+      statusHtml = `
+        <span class="badge b-ok">✓ Kurulu</span>
+        <a class="btn btn-sm" href="/dictionary">Aç</a>
+        <button class="btn btn-danger" onclick="deleteDictPack('${esc(p.id)}', '${esc(p.name)}')">Sil</button>
+      `;
+    } else {
+      statusHtml = `
+        <span class="small" style="color:#666">Kurulu değil</span>
+        <button class="btn btn-sm" style="margin-left:4px" onclick="downloadDictPacks(['${esc(p.id)}'])">» İndir</button>
+      `;
+    }
+    return `<tr>
+      <td class="row2 c"><b>${esc(p.lang)}</b></td>
+      <td class="row1"><b>${esc(p.name)}</b><div class="fdesc">${esc(p.desc)}</div></td>
+      <td class="row2 c hide-s">${(p.entry_count || p.headwords || 0).toLocaleString("tr-TR")}</td>
+      <td class="row2 c">${esc(p.installed_human || p.size)}</td>
+      <td class="row3 c">${statusHtml}</td>
+    </tr>`;
+  }).join("");
+
+  if (anyDl) dictOrLangDownloading = true;
+}
+
+function renderSetupLanguages(transData) {
+  const tbody = document.getElementById("setup-langs-body");
+  if (!tbody) return;
+  const langs = transData.languages || [];
+  let anyDl = false;
+
+  tbody.innerHTML = langs.map(l => {
+    let statusHtml = "";
+    if (l.downloading) {
+      anyDl = true;
+      statusHtml = `
+        <span class="badge b-dl">İndiriliyor (${esc(l.speed_human)})</span>
+        <div class="pbar-wrap" style="margin-top:3px"><div class="pbar-fill orange" style="width:${Math.min(l.percent || 0, 100)}%"></div><div class="pbar-text">%${l.percent || 0}</div></div>
+      `;
+    } else if (l.installed) {
+      statusHtml = `
+        <span class="badge b-ok">✓ Kurulu</span>
+        <a class="btn btn-sm" href="/translate">Aç</a>
+        <button class="btn btn-danger" onclick="deleteTransLang('${esc(l.code)}', '${esc(l.name)}')">Sil</button>
+      `;
+    } else {
+      statusHtml = `
+        <span class="small" style="color:#666">Kurulu değil</span>
+        <button class="btn btn-sm" style="margin-left:4px" onclick="downloadTransLang('${esc(l.code)}')">» İndir</button>
+      `;
+    }
+    return `<tr>
+      <td class="row2 c"><b>${esc(l.code.toUpperCase())}</b></td>
+      <td class="row1"><b>${esc(l.name)} (${esc(l.native)})</b><div class="fdesc">${esc(l.desc)}</div></td>
+      <td class="row2 c">${esc(l.installed_human || l.size)}</td>
+      <td class="row3 c">${statusHtml}</td>
+    </tr>`;
+  }).join("");
+
+  if (anyDl) dictOrLangDownloading = true;
+}
+
+async function downloadDictPacks(packIds) {
+  dictOrLangDownloading = true;
+  await fetch("/api/dictionary/packs/download", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ packs: packIds })
+  });
+  await fetchCatalog();
+}
+
+async function deleteDictPack(packId, name) {
+  if (!confirm(`"${name}" sözlük paketini diskten silmek istediğinize emin misiniz?`)) return;
+  await fetch(`/api/dictionary/packs/${encodeURIComponent(packId)}`, { method: "DELETE" });
+  await fetchCatalog();
+}
+
+async function downloadTransLang(langCode) {
+  dictOrLangDownloading = true;
+  await fetch("/api/translate/models/download", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ langs: [langCode] })
+  });
+  await fetchCatalog();
+}
+
+async function deleteTransLang(langCode, name) {
+  if (!confirm(`"${name}" çeviri modelini diskten silmek istediğinize emin misiniz?`)) return;
+  await fetch(`/api/translate/models/${encodeURIComponent(langCode)}`, { method: "DELETE" });
+  await fetchCatalog();
+}
+
+async function startCustomUrlDownload() {
+  const url = document.getElementById("custom-zim-url").value.trim();
+  const name = document.getElementById("custom-zim-name").value.trim();
+  if (!url) { alert("Lütfen geçerli bir .zim indirme URL'si girin."); return; }
+  const r = await fetch("/api/downloads/custom-url", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ url, name, folder: "custom" })
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    alert("Hata: " + (d.detail || r.statusText));
+    return;
+  }
+  document.getElementById("custom-zim-url").value = "";
+  document.getElementById("custom-zim-name").value = "";
+  await fetchCatalog();
+}
+
+async function uploadLocalZimFile() {
+  const fileInput = document.getElementById("custom-zim-file");
+  const statusEl = document.getElementById("custom-zim-upload-status");
+  if (!fileInput.files || !fileInput.files.length) {
+    alert("Lütfen yüklenecek bir .zim dosyası seçin.");
+    return;
+  }
+  const f = fileInput.files[0];
+  statusEl.innerHTML = `<span class="badge b-dl">Yükleniyor (${esc(f.name)})...</span>`;
+  const fd = new FormData();
+  fd.append("file", f);
+  fd.append("folder", "custom");
+  try {
+    const r = await fetch("/api/packages/upload-zim", { method: "POST", body: fd });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      statusEl.innerHTML = `<span class="badge b-warn">Hata: ${esc(d.detail || r.statusText)}</span>`;
+      return;
+    }
+    statusEl.innerHTML = `<span class="badge b-ok">✓ Yüklendi (${esc(d.size_human)})</span>`;
+    fileInput.value = "";
+    await fetchCatalog();
+  } catch (e) {
+    statusEl.innerHTML = `<span class="badge b-warn">Bağlantı hatası</span>`;
+  }
+}
+
+// İlk yükleme ve çakışmasız (ardışık) canlı durum sorgulama
+let lastDlSig = "";
+async function pollSetupLoop() {
+  try {
+    const r = await fetch("/api/downloads/progress");
+    const dl = await r.json();
+    renderDownloads(dl);
+    const sig = `${dl.active_count || 0}|${(dl.queue || []).length}|${(dl.history || []).length}`;
+    if (sig !== lastDlSig) {
+      lastDlSig = sig;
+      await fetchCatalog();
+    } else if (dictOrLangDownloading) {
+      dictOrLangDownloading = false;
+      const [dr, tr] = await Promise.all([
+        fetch("/api/dictionary/status").then(x => x.json()),
+        fetch("/api/translate/status").then(x => x.json())
+      ]);
+      renderSetupDictionaries(dr);
+      renderSetupLanguages(tr);
+      fetchMapAndCaptiveStatus();
+    }
+  } catch (e) {}
+  setTimeout(pollSetupLoop, 1600);
+}
+fetchCatalog().then(() => setTimeout(pollSetupLoop, 1600));
+
+async function fetchMapAndCaptiveStatus() {
+  try {
+    const r = await fetch("/api/maps/status");
+    const data = await r.json();
+
+    const badge = document.getElementById("map-status-badge");
+    const desc = document.getElementById("map-status-desc");
+    const dlBtn = document.getElementById("btn-map-download");
+    const delBtn = document.getElementById("btn-map-delete");
+    const pbox = document.getElementById("map-progress-box");
+
+    const dl = data.download_state || {};
+    if (dl.status === "downloading") {
+      badge.innerHTML = `<span class="badge b-dl">Kesit Çıkarılıyor / İndiriliyor...</span>`;
+      pbox.style.display = "block";
+      document.getElementById("map-progress-msg").textContent = dl.message || "İndiriliyor...";
+      document.getElementById("map-progress-bar").style.width = (dl.percent || 15) + "%";
+      document.getElementById("map-progress-pct").textContent = "%" + (dl.percent || 15);
+      dlBtn.style.display = "none";
+      delBtn.style.display = "none";
+    } else {
+      pbox.style.display = "none";
+      if (data.installed) {
+        badge.innerHTML = `<span class="badge b-ok">✓ Kurulu (${esc(data.size_human)})</span> <a href="/maps" class="btn btn-sm">Haritayı Aç</a>`;
+        desc.textContent = `OpenStreetMap ${esc(data.name)} (Build: ${esc(data.build)}, Boyut: ${esc(data.size_human)}). Sokak seviyesinde çevrimdışı kullanıma hazır.`;
+        dlBtn.style.display = "none";
+        delBtn.style.display = "inline-block";
+      } else {
+        badge.innerHTML = `<span class="small" style="color:#666">Kurulu değil (~1.7 GB)</span>`;
+        desc.textContent = "Türkiye kesiti (~1.7 GB) henüz indirilmedi. İndir butonuna basarak doğrudan sunucuya kurabilirsiniz.";
+        dlBtn.style.display = "inline-block";
+        delBtn.style.display = "none";
+      }
+    }
+
+    const cBadge = document.getElementById("captive-status-badge");
+    const cBtn = document.getElementById("btn-captive-toggle");
+    if (data.captive_portal_enabled) {
+      cBadge.innerHTML = `<span class="badge b-ok">✓ Etkin (Otomatik Karşılama Açık)</span>`;
+      cBtn.textContent = "» Captive Portal'ı Devre Dışı Bırak";
+      cBtn.className = "btn btn-danger";
+    } else {
+      cBadge.innerHTML = `<span class="badge b-wait">Devre Dışı (Kapalı)</span>`;
+      cBtn.textContent = "» Captive Portal'ı Etkinleştir";
+      cBtn.className = "btn btn-primary";
+    }
+  } catch(e) {}
+}
+
+async function triggerMapDownload() {
+  let pw = adminPasswordCached;
+  if (!pw) {
+    pw = promptAdminPassword("Haritayı indirmek için yönetici şifresini girin:");
+    if (!pw) return;
+  }
+  const r = await fetch("/api/maps/download", {
+    method: "POST",
+    headers: getAdminHeaders()
+  });
+  if (r.status === 401) {
+    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
+    if (!pw) return;
+    await fetch("/api/maps/download", { method: "POST", headers: getAdminHeaders() });
+  }
+  fetchMapAndCaptiveStatus();
+}
+
+async function triggerMapDelete() {
+  if (!confirm("Çevrimdışı harita dosyasını diskten silmek istediğinize emin misiniz?")) return;
+  let pw = adminPasswordCached;
+  if (!pw) {
+    pw = promptAdminPassword("Haritayı silmek için yönetici şifresini girin:");
+    if (!pw) return;
+  }
+  const r = await fetch("/api/maps", {
+    method: "DELETE",
+    headers: getAdminHeaders()
+  });
+  if (r.status === 401) {
+    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
+    if (!pw) return;
+    await fetch("/api/maps", { method: "DELETE", headers: getAdminHeaders() });
+  }
+  fetchMapAndCaptiveStatus();
+}
+
+async function toggleCaptivePortal() {
+  let pw = adminPasswordCached;
+  if (!pw) {
+    pw = promptAdminPassword("Captive Portal ayarını değiştirmek için yönetici şifresini girin:");
+    if (!pw) return;
+  }
+  const r = await fetch("/api/captive/toggle", {
+    method: "POST",
+    headers: getAdminHeaders(),
+    body: JSON.stringify({})
+  });
+  if (r.status === 401) {
+    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
+    if (!pw) return;
+    await fetch("/api/captive/toggle", { method: "POST", headers: getAdminHeaders(), body: JSON.stringify({}) });
+  }
+  fetchMapAndCaptiveStatus();
+}
+
+</script>
+</body>
+</html>

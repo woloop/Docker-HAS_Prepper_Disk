@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAS_PrepperDisk :: Saha Araçları ve Notlar</title>
+<style>
+  body{margin:0;background:#E5E5E5;color:#000;font-family:Verdana,Tahoma,Arial,sans-serif;font-size:11px}
+  a{color:#006699;text-decoration:none}
+  a:hover{color:#DD6900;text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:10px}
+  .bodyline{background:#fff;border:1px solid #98AAB1;padding:8px}
+
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 10px}
+  .logo{font-family:"Trebuchet MS",Verdana,sans-serif;font-size:26px;font-weight:bold;color:#006699;letter-spacing:-1px;text-shadow:1px 1px 0 #C7D0D7;display:flex;align-items:center;gap:8px}
+  .logo span{color:#DD6900}
+  .slogan{font-size:11px;color:#555;margin-top:2px}
+  .navlinks{font-size:11px;font-weight:bold;display:flex;flex-wrap:wrap;gap:8px}
+  .navlinks a::before{content:"» ";color:#999;font-weight:normal}
+
+  .crumb{font-weight:bold;font-size:12px;margin:8px 2px}
+  .small{font-size:10px;color:#444}
+
+  table.forumline{width:100%;border-collapse:collapse;border:1px solid #006699;background:#fff;margin-bottom:10px}
+  .forumline th{background:linear-gradient(#3F7FAD,#006699);color:#FFA34F;font-size:11px;font-weight:bold;height:24px;padding:0 8px;border:1px solid #fff;border-top:0;text-align:left}
+  .forumline td{padding:6px 8px;border:1px solid #fff;vertical-align:middle}
+  td.cat{background:linear-gradient(#EEF2F5,#C7D0D7);height:22px;font-weight:bold;font-size:12px;color:#006699}
+  td.row1{background:#EFEFEF}
+  td.row2{background:#DEE3E7}
+  td.c{text-align:center}
+
+  input[type=number],input[type=text],select,textarea{
+    font-family:Verdana,sans-serif;font-size:11px;border:1px solid #7F9DB9;padding:3px 5px;background:#fff;color:#000
+  }
+  .btn{font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;background:#FAFAFA;border:1px solid #444;padding:3px 8px;cursor:pointer;color:#000}
+  .btn:hover{background:#FFF3D6;border-color:#006699}
+  .btn-primary{background:linear-gradient(#3F7FAD,#006699);color:#fff;border:1px solid #003F5E;padding:4px 10px}
+  .btn-primary:hover{background:linear-gradient(#4E8FBD,#0077B3);color:#FFA34F}
+  .btn-danger{background:#FFF0F0;color:#990000;border-color:#990000;font-weight:normal;padding:2px 6px;font-size:10px}
+  .btn-danger:hover{background:#FFD6D6}
+
+  .res-inline{font-weight:bold;color:#006699;font-size:12px}
+  .grid-2{display:grid;grid-template-columns:3fr 2fr;gap:10px;align-items:start}
+  .note-box{background:#fff;border:1px solid #C7D0D7;padding:6px 8px;margin-top:4px;white-space:pre-wrap;line-height:1.45}
+
+  .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
+  @media (max-width:720px){ .grid-2{grid-template-columns:1fr} .logo{font-size:22px} }
+
+  .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
+  .docker-tag svg{width:14px;height:14px;fill:#006699}
+
+</style>
+</head>
+<body>
+<div class="wrap"><div class="bodyline">
+
+  <div class="top">
+    <div>
+      <div class="logo"><a href="/home" style="color:inherit;text-decoration:none">HAS_<span>Prepper</span>Disk</a>
+        <span class="docker-tag"><svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.186.185.186zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.714h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm-2.928 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm21.618 1.409c-.37-.215-1.004-.341-1.647-.354-.082-.41-.304-.77-.66-.998-.679-.434-1.614-.4-2.29.073-.393-.779-1.246-1.272-2.179-1.258-.093 0-.188.005-.28.016v-.668c0-.306-.247-.554-.553-.554H.553C.247 6.64 0 6.888 0 7.194v5.485c0 2.297.868 4.437 2.443 6.027C4.018 20.295 6.136 21.18 8.411 21.18c5.44 0 9.851-4.41 9.851-9.851 0-.11-.004-.219-.01-.328.704-.42 1.543-.591 2.378-.36.425.118.81.334 1.127.632.428-.466.82-.973 1.168-1.517-.384-.214-.766-.4-1.123-.554z"/></svg>DOCKERIZED</span></div>
+      <div class="slogan">Pratik Saha Hesaplayıcıları, Ortak Not Defteri ve Yer İmleri</div>
+    </div>
+    <div class="navlinks">
+      <a href="/home">Ana Sayfa</a>
+      <a href="/dictionary">Sözlük</a>
+      <a href="/translate">Çeviri</a>
+      <a href="/docs">Belgeler</a>
+      <a href="/kiwix/">Kütüphane</a>
+      <a href="/setup">Kurulum</a>
+    </div>
+  </div>
+
+  <div class="crumb">
+    <a href="/home">HAS_PrepperDisk Ana Sayfa</a> &raquo; <a href="/tools">Saha Araçları ve Notlar</a>
+  </div>
+
+  <!-- 1. SADELEŞTİRİLMİŞ PRATİK SAHA HESAPLAYICILARI -->
+  <table class="forumline">
+    <tr>
+      <th width="210">Hesaplama Aracı</th>
+      <th>Değerler</th>
+      <th width="320">Sonuç</th>
+    </tr>
+    <!-- Su Klorlama -->
+    <tr>
+      <td class="row1"><b>💧 Su Klorlama Dozajı</b><div class="small">Kokusuz çamaşır suyu ile arıtma</div></td>
+      <td class="row1">
+        <input type="number" id="w-vol" value="5" min="0.5" step="0.5" style="width:55px" oninput="calcAll()">
+        <select id="w-unit" onchange="calcAll()">
+          <option value="1" selected>Litre</option>
+          <option value="3.785">Galon</option>
+          <option value="19">Damacana (19L)</option>
+        </select>
+        &middot;
+        <select id="w-conc" onchange="calcAll()">
+          <option value="4">%4 Klor</option>
+          <option value="5" selected>%5 Klor (Standart)</option>
+          <option value="6">%6 Klor</option>
+        </select>
+        <select id="w-cond" onchange="calcAll()">
+          <option value="1" selected>Berrak Su</option>
+          <option value="2">Bulanık Su (2x)</option>
+        </select>
+      </td>
+      <td class="row2" id="w-res"></td>
+    </tr>
+    <!-- Akü ve Güneş Paneli -->
+    <tr>
+      <td class="row1"><b>🔋 Akü &amp; Güneş Süresi</b><div class="small">Çalışma ve şarj süresi</div></td>
+      <td class="row1">
+        <select id="p-volt" onchange="calcAll()">
+          <option value="12" selected>12V</option>
+          <option value="24">24V</option>
+          <option value="48">48V</option>
+        </select>
+        <input type="number" id="p-ah" value="100" min="1" step="10" style="width:55px" oninput="calcAll()"> <b>Ah</b>
+        &middot; Yük: <input type="number" id="p-load" value="45" min="1" step="5" style="width:55px" oninput="calcAll()"> <b>W</b>
+        &middot; Panel: <input type="number" id="p-solar" value="200" min="0" step="20" style="width:55px" oninput="calcAll()"> <b>W</b>
+      </td>
+      <td class="row2" id="p-res"></td>
+    </tr>
+    <!-- Birim Dönüştürücü -->
+    <tr>
+      <td class="row1"><b>📏 Birim Dönüştürücü</b><div class="small">ABD (Imperial) ↔ Metrik</div></td>
+      <td class="row1">
+        <input type="number" id="u-val" value="1" step="any" style="width:70px" oninput="calcAll()">
+        <select id="u-type" onchange="calcAll()">
+          <option value="gal_l" selected>ABD Galonu (gal) ➔ Litre (L)</option>
+          <option value="l_gal">Litre (L) ➔ ABD Galonu (gal)</option>
+          <option value="floz_ml">Sıvı Ons (fl oz) ➔ Mililitre (mL)</option>
+          <option value="f_c">Fahrenheit (°F) ➔ Celsius (°C)</option>
+          <option value="c_f">Celsius (°C) ➔ Fahrenheit (°F)</option>
+          <option value="lb_kg">Pound (lb) ➔ Kilogram (kg)</option>
+          <option value="oz_g">Ons (oz) ➔ Gram (g)</option>
+          <option value="in_cm">İnç (inch) ➔ Santimetre (cm)</option>
+          <option value="ft_m">Fit (ft) ➔ Metre (m)</option>
+          <option value="mi_km">Kara Mili (mile) ➔ Kilometre (km)</option>
+          <option value="psi_bar">PSI ➔ Bar</option>
+        </select>
+      </td>
+      <td class="row2" id="u-res"></td>
+    </tr>
+    <!-- ORS Tuz-Şeker -->
+    <tr>
+      <td class="row1"><b>⚕️ ORS Tuz-Şeker Oranı</b><div class="small">Sıvı kaybı (WHO standart)</div></td>
+      <td class="row1">
+        <input type="number" id="ors-l" value="1" min="0.5" step="0.5" style="width:60px" oninput="calcAll()"> <b>Litre</b> kaynatılıp soğutulmuş temiz içme suyu
+      </td>
+      <td class="row2" id="ors-res"></td>
+    </tr>
+  </table>
+
+  <!-- 2. SADELEŞTİRİLMİŞ NOT DEFTERİ VE YER İMLERİ -->
+  <div class="grid-2" id="notes">
+    <!-- Sol: Ortak Not Defteri -->
+    <table class="forumline">
+      <tr>
+        <th>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span>📝 Ortak Not Defteri ve Kontrol Listeleri</span>
+            <input type="text" id="filter-q" placeholder="Notlarda ara..." style="width:130px;font-size:10px;padding:1px 4px" oninput="loadAll()">
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td class="row2">
+          <div style="display:flex;gap:6px;margin-bottom:4px">
+            <input type="text" id="n-title" placeholder="Not başlığı yazın..." style="flex:1">
+            <button type="button" class="btn btn-primary" onclick="addNote()">» Not Ekle</button>
+          </div>
+          <textarea id="n-content" rows="3" style="width:98%" placeholder="Notunuzu veya kontrol listenizi buraya yazın..."></textarea>
+        </td>
+      </tr>
+      <tbody id="notes-body">
+        <tr><td class="row1 c">Notlar yükleniyor...</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Sağ: Kütüphane Yer İmleri -->
+    <table class="forumline">
+      <tr><th>⭐ Hızlı Kütüphane Yer İmleri</th></tr>
+      <tr>
+        <td class="row2">
+          <div style="display:flex;gap:4px;margin-bottom:4px">
+            <input type="text" id="b-title" placeholder="Başlık (Örn: İlk Yardım)" style="flex:1">
+            <button type="button" class="btn btn-primary" onclick="addBookmark()">» Ekle</button>
+          </div>
+          <input type="text" id="b-url" placeholder="Adres (Örn: /kiwix/...)" style="width:97%">
+        </td>
+      </tr>
+      <tbody id="bookmarks-body">
+        <tr><td class="row1 c">Yer imleri yükleniyor...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="copy">
+    HAS_PrepperDisk &copy; 2026 &middot; Tüm hesaplamalar ve notlar internet olmadan yerel olarak çalışır.
+  </div>
+
+</div></div>
+
+<script>
+const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function calcAll() {
+  // 1. Su Klorlama
+  const vol = (parseFloat(document.getElementById("w-vol").value) || 0) * (parseFloat(document.getElementById("w-unit").value) || 1);
+  const conc = parseFloat(document.getElementById("w-conc").value) || 5;
+  const cond = parseFloat(document.getElementById("w-cond").value) || 1;
+  const ml = vol * 0.10 * (5.0 / conc) * cond;
+  const drops = Math.max(1, Math.round(ml * 20));
+  document.getElementById("w-res").innerHTML = `<span class="res-inline">${drops} Damla</span> (${ml.toFixed(2)} mL) <span class="small">&middot; 30 dk bekletin</span>`;
+
+  // 2. Akü & Güneş
+  const volt = parseFloat(document.getElementById("p-volt").value) || 12;
+  const ah = parseFloat(document.getElementById("p-ah").value) || 100;
+  const load = Math.max(1, parseFloat(document.getElementById("p-load").value) || 45);
+  const solar = parseFloat(document.getElementById("p-solar").value) || 0;
+  const usableWh = volt * ah * 0.65;
+  const hrs = usableWh / load;
+  const h = Math.floor(hrs), m = Math.round((hrs - h) * 60);
+  const solarTxt = solar > 0 ? ` &middot; Şarj: ~${((volt * ah * 0.65) / (solar * 0.72)).toFixed(1)} sa` : "";
+  document.getElementById("p-res").innerHTML = `<span class="res-inline">${h} sa ${m} dk</span> çalışır <span class="small">(${usableWh.toFixed(0)} Wh${solarTxt})</span>`;
+
+  // 3. Birim Dönüştürücü
+  const uVal = parseFloat(document.getElementById("u-val").value);
+  const uType = document.getElementById("u-type").value;
+  if (isNaN(uVal)) {
+    document.getElementById("u-res").textContent = "—";
+  } else {
+    let r = 0, unit = "";
+    if (uType === "gal_l") { r = uVal * 3.78541; unit = "Litre (L)"; }
+    else if (uType === "l_gal") { r = uVal / 3.78541; unit = "Galon (gal)"; }
+    else if (uType === "floz_ml") { r = uVal * 29.5735; unit = "mL"; }
+    else if (uType === "f_c") { r = (uVal - 32) * 5 / 9; unit = "°C"; }
+    else if (uType === "c_f") { r = (uVal * 9 / 5) + 32; unit = "°F"; }
+    else if (uType === "lb_kg") { r = uVal * 0.453592; unit = "kg"; }
+    else if (uType === "oz_g") { r = uVal * 28.3495; unit = "gram"; }
+    else if (uType === "in_cm") { r = uVal * 2.54; unit = "cm"; }
+    else if (uType === "ft_m") { r = uVal * 0.3048; unit = "Metre"; }
+    else if (uType === "mi_km") { r = uVal * 1.60934; unit = "km"; }
+    else if (uType === "psi_bar") { r = uVal * 0.0689476; unit = "Bar"; }
+    document.getElementById("u-res").innerHTML = `<span class="res-inline">${r.toFixed(2).replace(/\.00$/, "")} ${unit}</span>`;
+  }
+
+  // 4. ORS
+  const orsL = Math.max(0.2, parseFloat(document.getElementById("ors-l").value) || 1);
+  document.getElementById("ors-res").innerHTML = `<span class="res-inline">${(orsL * 3).toFixed(1)} g Tuz</span> + <span class="res-inline">${(orsL * 25).toFixed(0)} g Şeker</span> <span class="small">(${(orsL * 0.5).toFixed(1)} tatlı k. tuz + ${(orsL * 6).toFixed(0)} çay k. şeker)</span>`;
+}
+
+async function loadAll() {
+  const q = document.getElementById("filter-q").value.trim();
+  try {
+    const r = await fetch(`/api/notes?q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+    renderNotes(data.notes || []);
+    renderBookmarks(data.bookmarks || []);
+  } catch (e) {}
+}
+
+function renderNotes(list) {
+  const tb = document.getElementById("notes-body");
+  if (!list.length) {
+    tb.innerHTML = `<tr><td class="row1 c">Kayıtlı not yok.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = list.map((n, i) => `
+    <tr>
+      <td class="${i % 2 === 0 ? "row1" : "row2"}">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <b style="color:#006699">${n.pinned ? "📌 " : ""}${esc(n.title)}</b>
+          <div>
+            <span class="small" style="margin-right:6px">${esc(n.created_at)}</span>
+            <button type="button" class="btn btn-danger" onclick="deleteNote(${n.id})">Sil</button>
+          </div>
+        </div>
+        <div class="note-box">${esc(n.content)}</div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function renderBookmarks(list) {
+  const tb = document.getElementById("bookmarks-body");
+  if (!list.length) {
+    tb.innerHTML = `<tr><td class="row1 c">Kayıtlı yer imi yok.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = list.map((b, i) => `
+    <tr>
+      <td class="${i % 2 === 0 ? "row1" : "row2"}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+          <div>
+            <a href="${esc(b.url)}" style="font-weight:bold">» ${esc(b.title)}</a>
+            ${b.note ? `<div class="small">${esc(b.note)}</div>` : ""}
+          </div>
+          <button type="button" class="btn btn-danger" onclick="deleteBookmark(${b.id})">Sil</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function addNote() {
+  const title = document.getElementById("n-title").value.trim();
+  const content = document.getElementById("n-content").value.trim();
+  if (!title || !content) return;
+  const r = await fetch("/api/notes/items", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ title, content, author: "Kullanıcı", category: "Genel", pinned: false })
+  });
+  if (r.ok) {
+    document.getElementById("n-title").value = "";
+    document.getElementById("n-content").value = "";
+    loadAll();
+  }
+}
+
+async function addBookmark() {
+  const title = document.getElementById("b-title").value.trim();
+  const url = document.getElementById("b-url").value.trim();
+  if (!title || !url) return;
+  const r = await fetch("/api/notes/bookmarks", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ title, url, category: "Genel", note: "" })
+  });
+  if (r.ok) {
+    document.getElementById("b-title").value = "";
+    document.getElementById("b-url").value = "";
+    loadAll();
+  }
+}
+
+async function deleteNote(id) {
+  await fetch(`/api/notes/items/${id}`, { method: "DELETE" });
+  loadAll();
+}
+
+async function deleteBookmark(id) {
+  await fetch(`/api/notes/bookmarks/${id}`, { method: "DELETE" });
+  loadAll();
+}
+
+calcAll();
+loadAll();
+</script>
+</body>
+</html>

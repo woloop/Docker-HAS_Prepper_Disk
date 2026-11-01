@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAS_PrepperDisk :: Kişisel Belge Kitaplığı (/docs)</title>
+<style>
+  body{margin:0;background:#E5E5E5;color:#000;font-family:Verdana,Tahoma,Arial,sans-serif;font-size:11px}
+  a{color:#006699;text-decoration:none}
+  a:hover{color:#DD6900;text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:10px}
+  .bodyline{background:#fff;border:1px solid #98AAB1;padding:8px}
+
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 10px}
+  .logo{font-family:"Trebuchet MS",Verdana,sans-serif;font-size:26px;font-weight:bold;color:#006699;letter-spacing:-1px;text-shadow:1px 1px 0 #C7D0D7;display:flex;align-items:center;gap:8px}
+  .logo span{color:#DD6900}
+  .slogan{font-size:11px;color:#555;margin-top:2px}
+  .navlinks{font-size:11px;font-weight:bold;display:flex;flex-wrap:wrap;gap:8px}
+  .navlinks a::before{content:"» ";color:#999;font-weight:normal}
+
+  .crumb{font-weight:bold;font-size:12px;margin:8px 2px}
+  .small{font-size:10px;color:#444}
+
+  .scroll{overflow-x:auto}
+  table.forumline{width:100%;border-collapse:collapse;border:1px solid #006699;background:#fff;margin-bottom:10px}
+  .forumline th{background:linear-gradient(#3F7FAD,#006699);color:#FFA34F;font-size:11px;font-weight:bold;height:24px;padding:0 6px;border:1px solid #fff;border-top:0;text-align:left}
+  .forumline td{padding:6px 8px;border:1px solid #fff;vertical-align:top}
+  td.cat{background:linear-gradient(#EEF2F5,#C7D0D7);height:22px;font-weight:bold;font-size:12px;color:#006699}
+  td.row1{background:#EFEFEF}
+  td.row2{background:#DEE3E7}
+  td.c{text-align:center}
+
+  input[type=text],input[type=file],select,textarea{
+    font-family:Verdana,sans-serif;font-size:11px;border:1px solid #7F9DB9;padding:3px 5px;background:#fff;color:#000
+  }
+  .btn{font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;background:#FAFAFA;border:1px solid #444;padding:3px 8px;cursor:pointer;color:#000}
+  .btn:hover{background:#FFF3D6;border-color:#006699}
+  .btn-primary{background:linear-gradient(#3F7FAD,#006699);color:#fff;border:1px solid #003F5E;padding:4px 10px}
+  .btn-primary:hover{background:linear-gradient(#4E8FBD,#0077B3);color:#FFA34F}
+  .btn-danger{background:#FFF0F0;color:#990000;border-color:#990000;font-weight:normal;padding:2px 6px;font-size:10px}
+  .btn-danger:hover{background:#FFD6D6}
+
+  .badge{display:inline-block;padding:1px 5px;font-size:10px;font-weight:bold;border-radius:2px;background:#D4EDDA;color:#155724;border:1px solid #A3CFBB}
+  .doc-viewer{background:#fff;border:1px solid #006699;padding:12px;white-space:pre-wrap;font-family:Verdana,sans-serif;font-size:12px;line-height:1.6;max-height:420px;overflow-y:auto}
+  .tr-viewer{background:#FFF8E6;border:1px solid #DD6900;padding:12px;white-space:pre-wrap;font-family:Verdana,sans-serif;font-size:12px;line-height:1.6;max-height:420px;overflow-y:auto;margin-top:8px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
+  @media (max-width:720px){ .grid-2{grid-template-columns:1fr} .logo{font-size:22px} }
+
+  .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
+  .docker-tag svg{width:14px;height:14px;fill:#006699}
+
+</style>
+</head>
+<body>
+<div class="wrap"><div class="bodyline">
+
+  <div class="top">
+    <div>
+      <div class="logo"><a href="/home" style="color:inherit;text-decoration:none">HAS_<span>Prepper</span>Disk</a>
+        <span class="docker-tag"><svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.186.185.186zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.714h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm-2.928 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm21.618 1.409c-.37-.215-1.004-.341-1.647-.354-.082-.41-.304-.77-.66-.998-.679-.434-1.614-.4-2.29.073-.393-.779-1.246-1.272-2.179-1.258-.093 0-.188.005-.28.016v-.668c0-.306-.247-.554-.553-.554H.553C.247 6.64 0 6.888 0 7.194v5.485c0 2.297.868 4.437 2.443 6.027C4.018 20.295 6.136 21.18 8.411 21.18c5.44 0 9.851-4.41 9.851-9.851 0-.11-.004-.219-.01-.328.704-.42 1.543-.591 2.378-.36.425.118.81.334 1.127.632.428-.466.82-.973 1.168-1.517-.384-.214-.766-.4-1.123-.554z"/></svg>DOCKERIZED</span></div>
+      <div class="slogan">Kişisel Belge Kitaplığı &mdash; PDF, TXT, MD Yükleme, Okuma ve Çevrimdışı Çeviri</div>
+    </div>
+    <div class="navlinks">
+      <a href="/home">Ana Sayfa</a>
+      <a href="/dictionary">Sözlük</a>
+      <a href="/translate">Çeviri</a>
+      <a href="/docs">Belgeler</a>
+      <a href="/kiwix/">Kütüphane</a>
+      <a href="/setup">Kurulum</a>
+    </div>
+  </div>
+
+  <div class="crumb">
+    <a href="/home">HAS_PrepperDisk Ana Sayfa</a> &raquo; <a href="/docs">Kişisel Belge Kitaplığı (/docs)</a>
+  </div>
+
+  <div class="grid-2">
+    <table class="forumline">
+      <tr><th>📂 Cihazdan Belge Yükle (PDF, TXT, MD, HTML, CSV, EPUB)</th></tr>
+      <tr>
+        <td class="row1">
+          <div style="margin-bottom:6px">
+            <input type="file" id="up-file" accept=".pdf,.txt,.md,.html,.htm,.csv,.json,.epub" style="width:96%">
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+            <input type="text" id="up-title" placeholder="Belge Başlığı (isteğe bağlı)" style="flex:1;min-width:150px">
+            <select id="up-cat">
+              <option value="Sağlık & Su">Sağlık &amp; Su</option>
+              <option value="Haberleşme">Haberleşme</option>
+              <option value="Teknik Kılavuz">Teknik Kılavuz</option>
+              <option value="Genel" selected>Genel</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;justify-content:space-between">
+            <input type="text" id="up-desc" placeholder="Kısa açıklama..." style="flex:1">
+            <button type="button" class="btn btn-primary" onclick="uploadSelectedFile()">» Belgeyi Yükle</button>
+          </div>
+          <div id="up-status" class="small" style="margin-top:4px;font-weight:bold;color:#006699"></div>
+        </td>
+      </tr>
+    </table>
+
+    <table class="forumline">
+      <tr><th>✍️ Doğrudan Yeni Metin Belgesi (.md / .txt) Oluştur</th></tr>
+      <tr>
+        <td class="row1">
+          <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+            <input type="text" id="new-title" placeholder="Belge Başlığı" style="flex:1;min-width:150px">
+            <select id="new-cat">
+              <option value="Sağlık & Su">Sağlık &amp; Su</option>
+              <option value="Haberleşme">Haberleşme</option>
+              <option value="Teknik Kılavuz">Teknik Kılavuz</option>
+              <option value="Genel" selected>Genel</option>
+            </select>
+          </div>
+          <textarea id="new-content" rows="3" style="width:98%" placeholder="Belge metnini buraya yazın veya yapıştırın..."></textarea>
+          <div style="text-align:right;margin-top:4px">
+            <button type="button" class="btn btn-primary" onclick="createTextDoc()">» Belge Olarak Kaydet</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <table class="forumline" id="reader-panel" style="display:none">
+    <tr>
+      <th>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span id="reader-title">📖 Belge Okuyucu</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <select id="tr-from" style="font-size:10px;padding:1px 3px">
+              <option value="en" selected>İngilizce (EN)</option>
+              <option value="de">Almanca (DE)</option>
+              <option value="fr">Fransızca (FR)</option>
+              <option value="ru">Rusça (RU)</option>
+              <option value="ar">Arapça (AR)</option>
+              <option value="tr">Türkçe (TR)</option>
+            </select>
+            <span>➔</span>
+            <select id="tr-to" style="font-size:10px;padding:1px 3px">
+              <option value="tr" selected>Türkçe (TR)</option>
+              <option value="en">İngilizce (EN)</option>
+            </select>
+            <button type="button" class="btn" id="btn-tr-doc" onclick="translateActiveDoc()" style="font-size:10px;padding:2px 7px">🌐 Belgeyi Çevrimdışı Çevir</button>
+            <button type="button" class="btn btn-danger" onclick="document.getElementById('reader-panel').style.display='none'">✕ Kapat</button>
+          </div>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <td class="row1">
+        <div id="reader-body" class="doc-viewer"></div>
+        <div id="reader-tr-body" class="tr-viewer" style="display:none"></div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="forumline">
+    <tr>
+      <td class="cat" colspan="5">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span>Kişisel Belge Kitaplığı (<span id="doc-count">0</span> belge, Toplam: <span id="doc-size">0 B</span>)</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="text" id="doc-q" placeholder="Belge ara..." oninput="loadDocs()">
+            <select id="doc-cat" onchange="loadDocs()">
+              <option value="all">Tüm Kategoriler</option>
+              <option value="Sağlık & Su">Sağlık &amp; Su</option>
+              <option value="Haberleşme">Haberleşme</option>
+              <option value="Teknik Kılavuz">Teknik Kılavuz</option>
+              <option value="Genel">Genel</option>
+            </select>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th width="110">Kategori</th>
+      <th>Belge Başlığı ve Dosya Adı</th>
+      <th width="75" class="c">Tür / Boyut</th>
+      <th width="115" class="c">Tarih</th>
+      <th width="190" class="c">İşlemler</th>
+    </tr>
+    <tbody id="docs-tbody">
+      <tr><td colspan="5" class="row1 c">Belgeler yükleniyor...</td></tr>
+    </tbody>
+  </table>
+
+  <div class="copy">
+    HAS_PrepperDisk &copy; 2026 &middot; Kişisel belgeleriniz <code>/library/docs</code> altında saklanır.
+  </div>
+
+</div></div>
+
+<script>
+const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let currentDocText = "";
+
+async function loadDocs() {
+  const q = document.getElementById("doc-q").value.trim();
+  const cat = document.getElementById("doc-cat").value;
+  try {
+    const r = await fetch(`/api/docs?q=${encodeURIComponent(q)}&category=${encodeURIComponent(cat)}`);
+    const data = await r.json();
+    document.getElementById("doc-count").textContent = data.count || 0;
+    document.getElementById("doc-size").textContent = data.total_human || "0 B";
+    const items = data.items || [];
+    const tb = document.getElementById("docs-tbody");
+    if (!items.length) {
+      tb.innerHTML = `<tr><td colspan="5" class="row1 c">Kayıtlı belge bulunamadı.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = items.map((d, i) => {
+      const rCls = i % 2 === 0 ? "row1" : "row2";
+      return `<tr>
+        <td class="${rCls}"><span class="badge">${esc(d.category)}</span></td>
+        <td class="${rCls}">
+          <a href="javascript:void(0)" onclick="openDoc('${esc(d.filename)}')" style="font-weight:bold;font-size:12px">📄 ${esc(d.title)}</a>
+          <div class="small">${esc(d.description)}</div>
+          <div class="small" style="font-family:monospace;color:#666">${esc(d.filename)}</div>
+        </td>
+        <td class="${rCls} c small"><b>${esc(d.ext.toUpperCase())}</b><br>${esc(d.size_human)}</td>
+        <td class="${rCls} c small">${esc(d.uploaded_at)}</td>
+        <td class="${rCls} c">
+          <button type="button" class="btn" onclick="openDoc('${esc(d.filename)}')" style="padding:2px 6px;font-size:10px">📖 Oku</button>
+          <a href="/api/docs/raw/${encodeURIComponent(d.filename)}" target="_blank" class="btn" style="padding:2px 6px;font-size:10px;text-decoration:none">⬇ İndir</a>
+          <button type="button" class="btn btn-danger" onclick="deleteDoc('${esc(d.filename)}')">Sil</button>
+        </td>
+      </tr>`;
+    }).join("");
+  } catch (e) {}
+}
+
+async function openDoc(filename) {
+  const panel = document.getElementById("reader-panel");
+  const bodyEl = document.getElementById("reader-body");
+  const trEl = document.getElementById("reader-tr-body");
+  trEl.style.display = "none";
+  panel.style.display = "table";
+  document.getElementById("reader-title").textContent = "📖 " + filename;
+  bodyEl.innerHTML = "<i>Belge yükleniyor...</i>";
+
+  try {
+    const r = await fetch(`/api/docs/read/${encodeURIComponent(filename)}`);
+    const data = await r.json();
+    document.getElementById("reader-title").textContent = `📖 ${data.title || data.filename} (${data.size_human || ""})`;
+    if (!data.is_text) {
+      currentDocText = "";
+      document.getElementById("btn-tr-doc").style.display = "none";
+      if (data.ext === ".pdf") {
+        bodyEl.innerHTML = `<iframe src="/api/docs/raw/${encodeURIComponent(filename)}" style="width:100%;height:420px;border:0"></iframe>`;
+      } else {
+        bodyEl.innerHTML = `<a href="/api/docs/raw/${encodeURIComponent(filename)}" target="_blank"><b>Dosyayı Aç / İndir (${esc(filename)})</b></a>`;
+      }
+    } else {
+      document.getElementById("btn-tr-doc").style.display = "inline-block";
+      currentDocText = data.content || "";
+      bodyEl.textContent = currentDocText;
+    }
+  } catch (e) {
+    bodyEl.innerHTML = `<span style="color:#990000">Belge okunamadı: ${esc(e.message)}</span>`;
+  }
+}
+
+async function translateActiveDoc() {
+  if (!currentDocText) return;
+  const trEl = document.getElementById("reader-tr-body");
+  const fromCode = document.getElementById("tr-from").value;
+  const toCode = document.getElementById("tr-to").value;
+  trEl.style.display = "block";
+  trEl.innerHTML = "<i>Belge çevrimdışı yapay zeka modeli ile çevriliyor...</i>";
+
+  try {
+    const r = await fetch("/api/translate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        text: currentDocText.slice(0, 4500),
+        from_code: fromCode,
+        to_code: toCode
+      })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || "Çeviri hatası");
+    trEl.innerHTML = `<div style="font-weight:bold;color:#006699;margin-bottom:6px">🌐 Çevrimdışı Çeviri (${esc(fromCode.toUpperCase())} ➔ ${esc(toCode.toUpperCase())} — ${esc(data.engine)}):</div>` + esc(data.translated_text);
+  } catch (e) {
+    trEl.innerHTML = `<span style="color:#990000">Çeviri yapılamadı: ${esc(e.message)}</span>`;
+  }
+}
+
+async function uploadSelectedFile() {
+  const fileInput = document.getElementById("up-file");
+  const statusEl = document.getElementById("up-status");
+  if (!fileInput.files || !fileInput.files.length) return;
+  const file = fileInput.files[0];
+  const title = document.getElementById("up-title").value.trim() || file.name;
+  const category = document.getElementById("up-cat").value;
+  const description = document.getElementById("up-desc").value.trim();
+
+  statusEl.textContent = "Dosya yükleniyor...";
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64Data = String(reader.result).split(",")[1] || "";
+    const r = await fetch("/api/docs/upload", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        filename: file.name,
+        title,
+        category,
+        description,
+        content_base64: base64Data
+      })
+    });
+    const data = await r.json();
+    if (r.ok) {
+      statusEl.textContent = `✓ ${data.doc.filename} yüklendi!`;
+      fileInput.value = "";
+      document.getElementById("up-title").value = "";
+      document.getElementById("up-desc").value = "";
+      loadDocs();
+    } else {
+      statusEl.textContent = `Hata: ${data.detail || "Yüklenemedi"}`;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function createTextDoc() {
+  const title = document.getElementById("new-title").value.trim();
+  const category = document.getElementById("new-cat").value;
+  const content = document.getElementById("new-content").value.trim();
+  if (!title || !content) return;
+  const filename = title.replace(/[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ_\-]/g, "_") + ".md";
+  const r = await fetch("/api/docs/upload", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      filename,
+      title,
+      category,
+      description: "Tarayıcı üzerinden oluşturulan metin belgesi.",
+      content_text: content
+    })
+  });
+  if (r.ok) {
+    document.getElementById("new-title").value = "";
+    document.getElementById("new-content").value = "";
+    loadDocs();
+  }
+}
+
+async function deleteDoc(filename) {
+  await fetch(`/api/docs/${encodeURIComponent(filename)}`, { method: "DELETE" });
+  loadDocs();
+}
+
+loadDocs();
+</script>
+</body>
+</html>
