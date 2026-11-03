@@ -343,10 +343,38 @@ function selectLangForTranslation(code) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+let adminPasswordCached = localStorage.getItem("prepper_admin_pw") || "";
+
+function promptAdminPassword(msg) {
+  const pw = prompt(msg || "Bu işlem için yönetici şifresini girin (varsayılan: prepper):", adminPasswordCached || "");
+  if (pw !== null) {
+    adminPasswordCached = pw.trim();
+    localStorage.setItem("prepper_admin_pw", adminPasswordCached);
+  }
+  return adminPasswordCached;
+}
+
+async function adminFetch(url, options = {}) {
+  options.headers = options.headers || {};
+  if (!options.headers["Content-Type"] && !options.headers["content-type"] && !(options.body instanceof FormData)) {
+    options.headers["Content-Type"] = "application/json";
+  }
+  if (adminPasswordCached) {
+    options.headers["x-admin-password"] = adminPasswordCached;
+  }
+  let r = await fetch(url, options);
+  if (r.status === 401) {
+    const pw = promptAdminPassword("Yönetici yetkilendirmesi gerekli. Lütfen şifrenizi girin:");
+    if (!pw) return r;
+    options.headers["x-admin-password"] = pw;
+    r = await fetch(url, options);
+  }
+  return r;
+}
+
 async function downloadLanguage(langCode) {
-  await fetch("/api/translate/models/download", {
+  await adminFetch("/api/translate/models/download", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ langs: [langCode] })
   });
   await loadTranslatorStatus();
@@ -354,7 +382,7 @@ async function downloadLanguage(langCode) {
 
 async function deleteLanguage(langCode, langName) {
   if (!confirm(`"${langName}" çevrimdışı dil modelini diskten silmek istediğinize emin misiniz?`)) return;
-  await fetch(`/api/translate/models/${encodeURIComponent(langCode)}`, { method: "DELETE" });
+  await adminFetch(`/api/translate/models/${encodeURIComponent(langCode)}`, { method: "DELETE" });
   await loadTranslatorStatus();
 }
 

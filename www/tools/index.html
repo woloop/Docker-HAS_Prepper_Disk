@@ -249,6 +249,35 @@ function calcAll() {
   document.getElementById("ors-res").innerHTML = `<span class="res-inline">${(orsL * 3).toFixed(1)} g Tuz</span> + <span class="res-inline">${(orsL * 25).toFixed(0)} g Şeker</span> <span class="small">(${(orsL * 0.5).toFixed(1)} tatlı k. tuz + ${(orsL * 6).toFixed(0)} çay k. şeker)</span>`;
 }
 
+let adminPasswordCached = localStorage.getItem("prepper_admin_pw") || "";
+
+function promptAdminPassword(msg) {
+  const pw = prompt(msg || "Bu işlem için yönetici şifresini girin (varsayılan: prepper):", adminPasswordCached || "");
+  if (pw !== null) {
+    adminPasswordCached = pw.trim();
+    localStorage.setItem("prepper_admin_pw", adminPasswordCached);
+  }
+  return adminPasswordCached;
+}
+
+async function adminFetch(url, options = {}) {
+  options.headers = options.headers || {};
+  if (!options.headers["Content-Type"] && !options.headers["content-type"] && !(options.body instanceof FormData)) {
+    options.headers["Content-Type"] = "application/json";
+  }
+  if (adminPasswordCached) {
+    options.headers["x-admin-password"] = adminPasswordCached;
+  }
+  let r = await fetch(url, options);
+  if (r.status === 401) {
+    const pw = promptAdminPassword("Yönetici yetkilendirmesi gerekli. Lütfen şifrenizi girin:");
+    if (!pw) return r;
+    options.headers["x-admin-password"] = pw;
+    r = await fetch(url, options);
+  }
+  return r;
+}
+
 async function loadAll() {
   const q = document.getElementById("filter-q").value.trim();
   try {
@@ -335,13 +364,15 @@ async function addBookmark() {
 }
 
 async function deleteNote(id) {
-  await fetch(`/api/notes/items/${id}`, { method: "DELETE" });
-  loadAll();
+  if (!confirm("Bu notu silmek istediğinize emin misiniz?")) return;
+  const r = await adminFetch(`/api/notes/items/${id}`, { method: "DELETE" });
+  if (r.ok) loadAll();
 }
 
 async function deleteBookmark(id) {
-  await fetch(`/api/notes/bookmarks/${id}`, { method: "DELETE" });
-  loadAll();
+  if (!confirm("Bu yer imini silmek istediğinize emin misiniz?")) return;
+  const r = await adminFetch(`/api/notes/bookmarks/${id}`, { method: "DELETE" });
+  if (r.ok) loadAll();
 }
 
 calcAll();

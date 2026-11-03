@@ -133,3 +133,6 @@ HAS_Prepper_Disk/
 | `GET /api/docs/raw/{filename}` | Belgeyi (PDF, EPUB, TXT, MD) doğrudan görüntüler veya indirir. |
 | `DELETE /api/docs/{filename}` | Kişisel belgeyi diskten siler. |
 | `GET /api/kiwix-helper.js` | Kiwix makalelerinin içine enjekte edilen üst gezinme çubuğu ve seç-çevir/sözlük betiğini sunar. |
+
+> [!IMPORTANT]
+> **LAN Güvenliği ve Yetkilendirme:** Veri indirme (`/api/downloads/*`), dosya yükleme (`/api/packages/upload-zim`, `/api/docs/upload`), paket/belge/not silme (`DELETE`) ve model yönetimi uç noktaları `X-Admin-Password` veya `Authorization: Bearer <parola>` HTTP başlığı gerektirir. Güvenlik gerekçesiyle şifrenin tarayıcı geçmişine ve proxy kayıtlarına düşmemesi için URL Query parametresi (`?admin_password=`) kabul edilmez.

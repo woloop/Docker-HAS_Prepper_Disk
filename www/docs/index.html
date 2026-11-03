@@ -302,9 +302,8 @@ async function uploadSelectedFile() {
   const reader = new FileReader();
   reader.onload = async () => {
     const base64Data = String(reader.result).split(",")[1] || "";
-    const r = await fetch("/api/docs/upload", {
+    const r = await adminFetch("/api/docs/upload", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         filename: file.name,
         title,
@@ -333,9 +332,8 @@ async function createTextDoc() {
   const content = document.getElementById("new-content").value.trim();
   if (!title || !content) return;
   const filename = title.replace(/[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ_\-]/g, "_") + ".md";
-  const r = await fetch("/api/docs/upload", {
+  const r = await adminFetch("/api/docs/upload", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       filename,
       title,
@@ -352,8 +350,14 @@ async function createTextDoc() {
 }
 
 async function deleteDoc(filename) {
-  await fetch(`/api/docs/${encodeURIComponent(filename)}`, { method: "DELETE" });
-  loadDocs();
+  if (!confirm(`"${filename}" belgesini kalıcı olarak silmek istediğinize emin misiniz?`)) return;
+  const r = await adminFetch(`/api/docs/${encodeURIComponent(filename)}`, { method: "DELETE" });
+  if (r.ok) {
+    loadDocs();
+  } else {
+    const err = await r.json().catch(() => ({}));
+    alert("Silme hatası: " + (err.detail || r.statusText));
+  }
 }
 
 loadDocs();

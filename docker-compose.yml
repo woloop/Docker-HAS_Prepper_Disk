@@ -15,6 +15,6 @@ services:
       - PREPPER_LIBRARY_DIR=/library
       - PREPPER_ZIM_DIR=/library/zims/content
       - PREPPER_LIBRARY_XML=/library/zims/library.xml
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-prepper}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
       - TZ=${TZ:-Europe/Istanbul}
     restart: unless-stopped

@@ -204,6 +204,9 @@
         <div id="space-warning" style="display:none;margin-top:6px;padding:4px 8px;background:#F8D7DA;border:1px solid #F5C6CB;color:#721C24;font-weight:bold">
           ⚠️ Uyarı: Seçtiğiniz paketlerin tahmini boyutu kullanılabilir boş disk alanından fazla!
         </div>
+        <div id="admin-pw-warning" style="display:none;margin-top:6px;padding:4px 8px;background:#FFF3CD;border:1px solid #FFEEBA;color:#856404;font-size:11px;">
+          ⚠️ <b>Güvenlik Uyarısı:</b> Varsayılan yönetici parolası (<code>prepper</code>) devrede. Cihazınız yerel ağa (LAN / Wi-Fi) açıksa yetkisiz paket silme/indirme işlemlerini önlemek için <code>.env</code> dosyasında güçlü bir <code>ADMIN_PASSWORD</code> belirleyin.
+        </div>
       </td>
     </tr>
   </table>
@@ -425,6 +428,14 @@ async function fetchCatalog() {
     const data = await r.json();
     catalogItems = data.items || [];
     diskInfo = data.disk || diskInfo;
+    const pwWarn = document.getElementById("admin-pw-warning");
+    if (pwWarn) {
+      if (data.admin_security && data.admin_security.is_default_password) {
+        pwWarn.style.display = "block";
+      } else {
+        pwWarn.style.display = "none";
+      }
+    }
 
     if (!initialSelectionDone) {
       initialSelectionDone = true;
@@ -718,8 +729,8 @@ function updateSelectionSummary() {
 
 let adminPasswordCached = localStorage.getItem("prepper_admin_pw") || "";
 
-function getAdminHeaders() {
-  const h = {"Content-Type": "application/json"};
+function getAdminHeaders(extra = {}) {
+  const h = {"Content-Type": "application/json", ...extra};
   if (adminPasswordCached) {
     h["x-admin-password"] = adminPasswordCached;
   }
@@ -735,6 +746,24 @@ function promptAdminPassword(msg) {
   return adminPasswordCached;
 }
 
+async function adminFetch(url, options = {}) {
+  options.headers = options.headers || {};
+  if (!options.headers["Content-Type"] && !options.headers["content-type"] && !(options.body instanceof FormData)) {
+    options.headers["Content-Type"] = "application/json";
+  }
+  if (adminPasswordCached) {
+    options.headers["x-admin-password"] = adminPasswordCached;
+  }
+  let r = await fetch(url, options);
+  if (r.status === 401) {
+    const pw = promptAdminPassword("Yönetici yetkilendirmesi gerekli. Lütfen geçerli şifreyi girin:");
+    if (!pw) return r;
+    options.headers["x-admin-password"] = pw;
+    r = await fetch(url, options);
+  }
+  return r;
+}
+
 async function bulkDeleteSelected() {
   const toDelete = catalogItems.filter(i =>
     selectedPrefixes.has(i.prefix) && (i.status === "installed" || i.status === "partial" || i.status === "downloading" || i.status === "queued")
@@ -747,30 +776,11 @@ async function bulkDeleteSelected() {
   if (!confirm(`Seçilen ${toDelete.length} paketi diskten toplu olarak silmek istediğinize emin misiniz?\n\n${names}`)) {
     return;
   }
-
-  let pw = adminPasswordCached;
-  if (!pw) {
-    pw = promptAdminPassword("Paketleri silmek için yönetici şifresini girin:");
-    if (!pw) return;
-  }
-
   const prefixes = toDelete.map(i => i.prefix);
-  let r = await fetch("/api/packages/bulk-delete", {
+  const r = await adminFetch("/api/packages/bulk-delete", {
     method: "POST",
-    headers: getAdminHeaders(),
     body: JSON.stringify({ prefixes })
   });
-
-  if (r.status === 401) {
-    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
-    if (!pw) return;
-    r = await fetch("/api/packages/bulk-delete", {
-      method: "POST",
-      headers: getAdminHeaders(),
-      body: JSON.stringify({ prefixes })
-    });
-  }
-
   if (r.ok) {
     for (const p of prefixes) selectedPrefixes.delete(p);
     await fetchCatalog();
@@ -782,9 +792,8 @@ async function bulkDeleteSelected() {
 
 async function updateConcurrency(val) {
   const max_concurrent = parseInt(val, 10) || 3;
-  await fetch("/api/downloads/concurrency", {
+  await adminFetch("/api/downloads/concurrency", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ max_concurrent })
   });
 }
@@ -796,9 +805,8 @@ async function startSelectedDownloads() {
     return;
   }
   const max_concurrent = parseInt(document.getElementById("sel-concurrency").value, 10) || 3;
-  const r = await fetch("/api/downloads/start", {
+  const r = await adminFetch("/api/downloads/start", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ prefixes, save_to_conf: true, max_concurrent })
   });
   if (!r.ok) {
@@ -812,9 +820,8 @@ async function startSelectedDownloads() {
 async function downloadSingle(prefix) {
   selectedPrefixes.add(prefix);
   const max_concurrent = parseInt(document.getElementById("sel-concurrency").value, 10) || 3;
-  const r = await fetch("/api/downloads/start", {
+  const r = await adminFetch("/api/downloads/start", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ prefixes: [prefix], save_to_conf: true, max_concurrent })
   });
   if (r.ok) await fetchCatalog();
@@ -824,9 +831,8 @@ async function cancelDownload(prefix, deletePartial) {
   if (deletePartial && !confirm("İndirme iptal edilecek ve geçici (.part) dosya silinecek. Emin misiniz?")) {
     return;
   }
-  await fetch("/api/downloads/cancel", {
+  await adminFetch("/api/downloads/cancel", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ prefix, delete_partial: deletePartial })
   });
   await fetchCatalog();
@@ -836,23 +842,9 @@ async function deletePackage(prefix, name) {
   if (!confirm(`"${name}" paketini diskten silmek istediğinize emin misiniz?`)) {
     return;
   }
-  let pw = adminPasswordCached;
-  if (!pw) {
-    pw = promptAdminPassword("Paketi silmek için yönetici şifresini girin:");
-    if (!pw) return;
-  }
-  let r = await fetch(`/api/packages/${encodeURIComponent(prefix)}`, {
-    method: "DELETE",
-    headers: getAdminHeaders()
+  const r = await adminFetch(`/api/packages/${encodeURIComponent(prefix)}`, {
+    method: "DELETE"
   });
-  if (r.status === 401) {
-    pw = promptAdminPassword("Şifre geçersiz. Lütfen doğru yönetici şifresini girin:");
-    if (!pw) return;
-    r = await fetch(`/api/packages/${encodeURIComponent(prefix)}`, {
-      method: "DELETE",
-      headers: getAdminHeaders()
-    });
-  }
   if (r.ok) {
     selectedPrefixes.delete(prefix);
     await fetchCatalog();
@@ -942,9 +934,8 @@ function renderSetupLanguages(transData) {
 
 async function downloadDictPacks(packIds) {
   dictOrLangDownloading = true;
-  await fetch("/api/dictionary/packs/download", {
+  await adminFetch("/api/dictionary/packs/download", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ packs: packIds })
   });
   await fetchCatalog();
@@ -952,15 +943,14 @@ async function downloadDictPacks(packIds) {
 
 async function deleteDictPack(packId, name) {
   if (!confirm(`"${name}" sözlük paketini diskten silmek istediğinize emin misiniz?`)) return;
-  await fetch(`/api/dictionary/packs/${encodeURIComponent(packId)}`, { method: "DELETE" });
+  await adminFetch(`/api/dictionary/packs/${encodeURIComponent(packId)}`, { method: "DELETE" });
   await fetchCatalog();
 }
 
 async function downloadTransLang(langCode) {
   dictOrLangDownloading = true;
-  await fetch("/api/translate/models/download", {
+  await adminFetch("/api/translate/models/download", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ langs: [langCode] })
   });
   await fetchCatalog();
@@ -968,7 +958,7 @@ async function downloadTransLang(langCode) {
 
 async function deleteTransLang(langCode, name) {
   if (!confirm(`"${name}" çeviri modelini diskten silmek istediğinize emin misiniz?`)) return;
-  await fetch(`/api/translate/models/${encodeURIComponent(langCode)}`, { method: "DELETE" });
+  await adminFetch(`/api/translate/models/${encodeURIComponent(langCode)}`, { method: "DELETE" });
   await fetchCatalog();
 }
 
@@ -976,9 +966,8 @@ async function startCustomUrlDownload() {
   const url = document.getElementById("custom-zim-url").value.trim();
   const name = document.getElementById("custom-zim-name").value.trim();
   if (!url) { alert("Lütfen geçerli bir .zim indirme URL'si girin."); return; }
-  const r = await fetch("/api/downloads/custom-url", {
+  const r = await adminFetch("/api/downloads/custom-url", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ url, name, folder: "custom" })
   });
   const d = await r.json().catch(() => ({}));
@@ -1004,7 +993,7 @@ async function uploadLocalZimFile() {
   fd.append("file", f);
   fd.append("folder", "custom");
   try {
-    const r = await fetch("/api/packages/upload-zim", { method: "POST", body: fd });
+    const r = await adminFetch("/api/packages/upload-zim", { method: "POST", body: fd });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) {
       statusEl.innerHTML = `<span class="badge b-warn">Hata: ${esc(d.detail || r.statusText)}</span>`;

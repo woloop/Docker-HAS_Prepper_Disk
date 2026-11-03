@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import re
+import secrets
 import shutil
 import sqlite3
 import tempfile
@@ -1020,7 +1021,75 @@ NOTES_DIR = Path(os.environ.get("PREPPER_NOTES_DIR", str(LIBRARY_DIR / "notes"))
 DOCS_DIR = Path(os.environ.get("PREPPER_DOCS_DIR", str(LIBRARY_DIR / "docs")))
 MAPS_DIR = Path(os.environ.get("PREPPER_MAPS_DIR", str(LIBRARY_DIR / "maps")))
 KIWIX_PORT = int(os.environ.get("KIWIX_PORT", "8081"))
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "prepper").strip()
+
+
+def init_admin_password() -> tuple[str, bool]:
+    """
+    Yönetici parolasını güvenli biçimde başlatır:
+    1. Ortam değişkeni (ADMIN_PASSWORD) verilmiş ve doluysa onu kullanır.
+       - Eğer değer varsayılan 'prepper' ise IS_DEFAULT_ADMIN_PW=True yapar ve konsola güvenlik uyarısı basar.
+    2. Ortam değişkeni boş veya yoksa:
+       - /library/config/admin_password.txt dosyasında kayıtlı parola var mı bakar.
+       - Yoksa rastgele güvenli bir parola üretip bu dosyaya kaydeder.
+    """
+    raw_env = os.environ.get("ADMIN_PASSWORD")
+    if raw_env is not None and raw_env.strip():
+        pw = raw_env.strip()
+        is_default = (pw.lower() == "prepper")
+        if is_default:
+            logger.warning(
+                "⚠️ GÜVENLİK UYARISI: ADMIN_PASSWORD varsayılan 'prepper' olarak ayarlı! "
+                "Cihazınız yerel ağa (LAN) açıksa yetkisiz paket silme/indirme işlemlerini önlemek için "
+                ".env dosyasında güçlü bir ADMIN_PASSWORD tanımlayın."
+            )
+        return pw, is_default
+
+    pw_file = LIBRARY_DIR / "config" / "admin_password.txt"
+    try:
+        if pw_file.exists():
+            saved_pw = pw_file.read_text(encoding="utf-8").strip()
+            if saved_pw:
+                return saved_pw, False
+    except Exception:
+        pass
+
+    generated_pw = secrets.token_urlsafe(9)
+    try:
+        pw_file.parent.mkdir(parents=True, exist_ok=True)
+        pw_file.write_text(generated_pw, encoding="utf-8")
+        logger.warning(
+            "🔑 ADMIN_PASSWORD belirlenmediği için otomatik rastgele parola üretildi: %s (Kayıt yeri: %s)",
+            generated_pw,
+            pw_file,
+        )
+    except Exception as exc:
+        logger.error("Admin parolası dosyaya kaydedilemedi: %s", exc)
+
+    return generated_pw, False
+
+
+ADMIN_PASSWORD, IS_DEFAULT_ADMIN_PW = init_admin_password()
+
+
+def verify_admin_auth(request: Request) -> None:
+    """
+    Kritik yönetim ve veri değiştirme API'leri için yönetici kimlik doğrulaması.
+    Güvenlik gerekçesiyle URL Query Parametresi (?admin_password=) KABUL EDİLMEZ.
+    Parola yalnızca 'X-Admin-Password' veya 'Authorization: Bearer <parola>' başlığıyla iletilmelidir.
+    """
+    if not ADMIN_PASSWORD:
+        return
+    auth_header = request.headers.get("x-admin-password") or request.headers.get("authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+    else:
+        token = auth_header.strip()
+
+    if not token or token != ADMIN_PASSWORD:
+        raise HTTPException(
+            status_code=401,
+            detail="Yönetici yetkilendirmesi başarısız. Lütfen 'X-Admin-Password' veya 'Authorization: Bearer' başlığı (header) ile geçerli şifreyi iletin.",
+        )
 
 # Captive Portal Etkinlik Durumu (Varsayılan Açık)
 CAPTIVE_PORTAL_ENABLED = os.environ.get("CAPTIVE_PORTAL_ENABLED", "true").lower() in ("true", "1", "yes")
@@ -1481,6 +1550,10 @@ async def api_status():
         "downloads": dl_status,
         "translator": local_translator.get_status(),
         "dictionary": dictionary_manager.get_status(),
+        "admin_security": {
+            "is_default_password": IS_DEFAULT_ADMIN_PW,
+            "auth_required": bool(ADMIN_PASSWORD),
+        },
     }
 
 
@@ -1558,11 +1631,16 @@ async def api_catalog():
         "downloads": dl_status,
         "translator": local_translator.get_status(),
         "dictionary": dictionary_manager.get_status(),
+        "admin_security": {
+            "is_default_password": IS_DEFAULT_ADMIN_PW,
+            "auth_required": bool(ADMIN_PASSWORD),
+        },
     }
 
 
 @app.post("/api/downloads/start")
-async def api_start_downloads(req: StartDownloadRequest):
+async def api_start_downloads(req: StartDownloadRequest, request: Request):
+    verify_admin_auth(request)
     conf_items = parse_content_conf(CONF_PATH)
     by_prefix = {item["prefix"]: item for item in conf_items}
 
@@ -1588,7 +1666,8 @@ async def api_start_downloads(req: StartDownloadRequest):
 
 
 @app.post("/api/downloads/custom-url")
-async def api_download_custom_url(req: CustomZimUrlRequest):
+async def api_download_custom_url(req: CustomZimUrlRequest, request: Request):
+    verify_admin_auth(request)
     url = (req.url or "").strip()
     if not url.startswith(("http://", "https://")):
         raise HTTPException(status_code=400, detail="Geçerli bir http:// veya https:// ZIM adresi girin.")
@@ -1613,6 +1692,11 @@ async def api_download_custom_url(req: CustomZimUrlRequest):
 
 @app.post("/api/packages/upload-zim")
 async def api_upload_local_zim(request: Request, filename: str = ""):
+    verify_admin_auth(request)
+    free_space = shutil.disk_usage(ZIM_DIR if ZIM_DIR.exists() else REPO_ROOT).free
+    if free_space < 500 * 1024 * 1024:
+        raise HTTPException(status_code=507, detail="Yetersiz disk alanı. Disk üzerinde 500 MB'dan az yer kaldı.")
+
     raw_name = (filename or request.headers.get("x-filename") or "uploaded_archive_2026-01.zim").strip()
     if not raw_name.lower().endswith(".zim"):
         raise HTTPException(status_code=400, detail="Sadece .zim uzantılı arşiv dosyaları yüklenebilir.")
@@ -1644,7 +1728,8 @@ async def api_upload_local_zim(request: Request, filename: str = ""):
 
 
 @app.post("/api/downloads/concurrency")
-async def api_set_concurrency(req: SetConcurrencyRequest):
+async def api_set_concurrency(req: SetConcurrencyRequest, request: Request):
+    verify_admin_auth(request)
     dl_status = await download_manager.set_concurrency(req.max_concurrent)
     return {"ok": True, "downloads": dl_status}
 
@@ -1655,26 +1740,10 @@ async def api_downloads_progress():
 
 
 @app.post("/api/downloads/cancel")
-async def api_cancel_download(req: CancelDownloadRequest):
+async def api_cancel_download(req: CancelDownloadRequest, request: Request):
+    verify_admin_auth(request)
     res = await download_manager.cancel(prefix=req.prefix, delete_partial=req.delete_partial)
     return {"ok": True, **res, "downloads": download_manager.get_status()}
-
-
-def verify_admin_auth(request: Request) -> None:
-    if not ADMIN_PASSWORD:
-        return
-    auth_header = request.headers.get("x-admin-password") or request.headers.get("authorization", "")
-    if auth_header.startswith("Bearer "):
-        token = auth_header[7:].strip()
-    else:
-        token = auth_header.strip()
-
-    # Query param alternatifi: ?admin_password=...
-    if not token:
-        token = request.query_params.get("admin_password", "").strip()
-
-    if token != ADMIN_PASSWORD:
-        raise HTTPException(status_code=401, detail="Yönetici şifresi geçersiz veya eksik.")
 
 
 def is_valid_catalog_prefix(prefix: str) -> bool:
@@ -1747,7 +1816,8 @@ async def api_bulk_delete_packages(req: BulkDeleteRequest, request: Request):
 
 
 @app.post("/api/kiwix/reload")
-async def api_reload_kiwix():
+async def api_reload_kiwix(request: Request):
+    verify_admin_auth(request)
     running = kiwix_manager.rebuild_library_and_reload()
     return {"ok": True, "kiwix_running": running}
 
@@ -1762,13 +1832,15 @@ async def api_translate_status():
 
 
 @app.post("/api/translate/models/download")
-async def api_translate_download_models(req: DownloadModelRequest):
+async def api_translate_download_models(req: DownloadModelRequest, request: Request):
+    verify_admin_auth(request)
     res = await local_translator.download_packs(pack_ids=req.packs, lang_codes=req.langs)
     return {"ok": True, **res}
 
 
 @app.delete("/api/translate/models/{lang_or_pack}")
-async def api_translate_delete_model(lang_or_pack: str):
+async def api_translate_delete_model(lang_or_pack: str, request: Request):
+    verify_admin_auth(request)
     res = await local_translator.delete_language(lang_or_pack)
     return {"ok": True, **res}
 
@@ -1800,7 +1872,8 @@ async def api_dictionary_status():
 
 
 @app.post("/api/dictionary/packs/download")
-async def api_dictionary_download(req: DownloadDictRequest):
+async def api_dictionary_download(req: DownloadDictRequest, request: Request):
+    verify_admin_auth(request)
     if not req.packs:
         raise HTTPException(status_code=400, detail="İndirilecek sözlük paketi seçilmedi.")
     res = await dictionary_manager.download_packs(req.packs)
@@ -1808,7 +1881,8 @@ async def api_dictionary_download(req: DownloadDictRequest):
 
 
 @app.delete("/api/dictionary/packs/{pack_id}")
-async def api_dictionary_delete(pack_id: str):
+async def api_dictionary_delete(pack_id: str, request: Request):
+    verify_admin_auth(request)
     res = await dictionary_manager.delete_pack(pack_id)
     return {"ok": True, **res}
 
@@ -1849,7 +1923,8 @@ async def api_add_bookmark(req: AddBookmarkRequest):
 
 
 @app.delete("/api/notes/bookmarks/{bm_id}")
-async def api_delete_bookmark(bm_id: int):
+async def api_delete_bookmark(bm_id: int, request: Request):
+    verify_admin_auth(request)
     deleted = await asyncio.to_thread(notes_manager.delete_bookmark, bm_id)
     return {"ok": True, "deleted": deleted}
 
@@ -1863,13 +1938,15 @@ async def api_add_note(req: AddNoteRequest):
 
 
 @app.post("/api/notes/items/{note_id}/pin")
-async def api_pin_note(note_id: int):
+async def api_pin_note(note_id: int, request: Request):
+    verify_admin_auth(request)
     await asyncio.to_thread(notes_manager.toggle_pin_note, note_id)
     return {"ok": True}
 
 
 @app.delete("/api/notes/items/{note_id}")
-async def api_delete_note(note_id: int):
+async def api_delete_note(note_id: int, request: Request):
+    verify_admin_auth(request)
     deleted = await asyncio.to_thread(notes_manager.delete_note, note_id)
     return {"ok": True, "deleted": deleted}
 
@@ -1885,7 +1962,8 @@ async def api_list_docs(q: str = "", category: str = "all"):
 
 
 @app.post("/api/docs/upload")
-async def api_upload_doc(req: UploadDocJsonRequest):
+async def api_upload_doc(req: UploadDocJsonRequest, request: Request):
+    verify_admin_auth(request)
     if req.content_base64:
         try:
             raw_bytes = base64.b64decode(req.content_base64)
@@ -1923,13 +2001,18 @@ async def api_read_doc(filename: str):
 async def api_raw_doc(filename: str):
     try:
         fpath = await asyncio.to_thread(docs_manager.get_file_path, filename)
-        return FileResponse(fpath)
+        headers = {}
+        if fpath.suffix.lower() in (".html", ".htm"):
+            # HTML dokümanlarını izole et; script çalıştırmayı ve üst sayfaya sızmayı engelle
+            headers["Content-Security-Policy"] = "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:;"
+        return FileResponse(fpath, headers=headers)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc))
 
 
 @app.delete("/api/docs/{filename}")
-async def api_delete_doc(filename: str):
+async def api_delete_doc(filename: str, request: Request):
+    verify_admin_auth(request)
     deleted = await asyncio.to_thread(docs_manager.delete_doc, filename)
     return {"ok": True, "deleted": deleted}
 
