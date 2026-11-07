@@ -47,6 +47,15 @@ if has systemctl; then
     if [ "$state" = active ]; then ok "$svc"
     else bad "$svc: $state  (kayıt / log: sudo journalctl -u $svc -n 50)"; fi
   done
+elif has pgrep; then
+  if pgrep -f kiwix-serve >/dev/null 2>&1; then
+    ok "kiwix-serve çalışıyor / running"
+  else
+    bad "kiwix-serve çalışmıyor / not running"
+  fi
+  if pgrep -f "uvicorn" >/dev/null 2>&1 || pgrep -f "prepper" >/dev/null 2>&1; then
+    ok "prepper-web sunucusu çalışıyor / prepper-web running"
+  fi
 else
   info "systemctl yok / not found"
 fi
@@ -77,8 +86,12 @@ fi
 
 # ---------------------------------------------------------------- web
 say "Web"
+WEB_PORT="${PREPPER_PORT:-${PORT:-80}}"
+WEB_BASE="http://localhost${WEB_PORT:+:$WEB_PORT}"
+[ "$WEB_PORT" = "80" ] && WEB_BASE="http://localhost"
 if has curl; then
-  for url in http://localhost/home/ http://localhost/kiwix/; do
+  for path in /home/ /kiwix/; do
+    url="${WEB_BASE}${path}"
     code=$(curl -s -o /dev/null -m 5 -w '%{http_code}' "$url")
     case "$code" in
       2*|3*) ok "$url ($code)";;

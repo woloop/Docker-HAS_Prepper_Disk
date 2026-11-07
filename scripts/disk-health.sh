@@ -7,7 +7,13 @@
 set -uo pipefail
 
 LIB="${LIB:-/library}"
-WEB="${WEB:-/library/www/html}"
+FALLBACK_WEB="$(cd "$(dirname "$0")/.." && pwd)/www"
+if [ -d "/library/www/html/home" ]; then
+  DEFAULT_WEB="/library/www/html"
+else
+  DEFAULT_WEB="$FALLBACK_WEB"
+fi
+WEB="${WEB:-$DEFAULT_WEB}"
 OUT="$WEB/home/disk.json"
 
 [ "$EUID" -eq 0 ] || { echo "sudo ile çalıştır / run with sudo" >&2; exit 1; }

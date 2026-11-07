@@ -84,11 +84,23 @@
   .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
 
   @media (max-width:640px){
+    body{font-size:14px}
+    .wrap{padding:4px}
     .hide-s{display:none}
     .logo{font-size:22px}
+    .navlinks{font-size:15px;line-height:2.2}
+    .navlinks a{margin:0 14px 0 0}
+    .crumb{font-size:14px}
+    .small{font-size:12px}
+    .forumline th{font-size:13px}
+    .forumline td{padding:8px 6px}
+    td.cat{font-size:14px}
+    input[type=text], select, .btn{font-size:15px;padding:6px 10px}
+    button.btn-sm{font-size:13px;padding:5px 8px}
     .stack-s td{display:block;width:auto !important}
     .toolbar{flex-direction:column;align-items:stretch}
-    .preset-group{justify-content:flex-start}
+    .preset-group{justify-content:flex-start;flex-wrap:wrap;gap:4px}
+    .copy{font-size:12px}
   }
 
   .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
@@ -132,6 +144,40 @@
       <td class="row2">
         <div><b>Kurulu Arşiv:</b> <span id="stat-installed">0</span> paket kullanıma hazır</div>
         <div style="margin-top:3px"><b>Kiwix Sunucusu:</b> <span id="stat-kiwix">Kontrol ediliyor...</span></div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 1.1. SİSTEM SAĞLIĞI VE TANILAMA (STATUS.SH & DISK-HEALTH.SH) -->
+  <table class="forumline stack-s">
+    <tr>
+      <th colspan="2">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span>🩺 Sistem Sağlığı ve Tanılama (scripts/status.sh &amp; scripts/disk-health.sh)</span>
+          <span class="small" id="diag-last-run" style="font-weight:normal;color:#fff"></span>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <td class="row1" colspan="2">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
+          <button type="button" class="btn btn-primary" id="btn-run-status" onclick="runDiagnostics('status')">
+            🔍 Sağlık Testini Çalıştır (status.sh)
+          </button>
+          <button type="button" class="btn" id="btn-run-disk" onclick="runDiagnostics('disk-health')">
+            💾 Disk &amp; Donanım Denetimi (disk-health.sh)
+          </button>
+          <button type="button" class="btn" onclick="clearDiagOutput()">
+            Temizle
+          </button>
+          <span id="diag-spinner" style="display:none;font-weight:bold;color:#006699">
+            ⏳ Betik çalıştırılıyor, lütfen bekleyin...
+          </span>
+        </div>
+
+        <div id="diag-terminal-wrap" style="display:none;margin-top:6px">
+          <div style="background:#1e1e1e;color:#d4d4d4;font-family:Consolas,monospace,'Courier New';font-size:12px;line-height:1.5;padding:10px;border-radius:3px;max-height:350px;overflow-y:auto;white-space:pre-wrap;border:1px solid #000" id="diag-terminal"></div>
+        </div>
       </td>
     </tr>
   </table>
@@ -1136,6 +1182,79 @@ async function toggleCaptivePortal() {
     await fetch("/api/captive/toggle", { method: "POST", headers: getAdminHeaders(), body: JSON.stringify({}) });
   }
   fetchMapAndCaptiveStatus();
+}
+
+async function runDiagnostics(tool) {
+  const btnStatus = document.getElementById("btn-run-status");
+  const btnDisk = document.getElementById("btn-run-disk");
+  const spinner = document.getElementById("diag-spinner");
+  const termWrap = document.getElementById("diag-terminal-wrap");
+  const term = document.getElementById("diag-terminal");
+  const lastRun = document.getElementById("diag-last-run");
+
+  btnStatus.disabled = true;
+  btnDisk.disabled = true;
+  spinner.style.display = "inline-block";
+  termWrap.style.display = "block";
+  term.innerHTML = `<span style="color:#aaa">> ./scripts/${tool === 'status' ? 'status.sh' : 'disk-health.sh'} başlatılıyor...\n</span>`;
+
+  try {
+    let r = await fetch("/api/diagnostics/run?tool=" + encodeURIComponent(tool), {
+      method: "POST",
+      headers: getAdminHeaders()
+    });
+    if (r.status === 401) {
+      const pw = promptAdminPassword("Tanılama betiğini çalıştırmak için yönetici şifresini girin:");
+      if (!pw) {
+        spinner.style.display = "none";
+        btnStatus.disabled = false;
+        btnDisk.disabled = false;
+        term.innerHTML += `<span style="color:#f44">İptal edildi: Yetkilendirme gerekli.</span>`;
+        return;
+      }
+      r = await fetch("/api/diagnostics/run?tool=" + encodeURIComponent(tool), {
+        method: "POST",
+        headers: getAdminHeaders()
+      });
+    }
+
+    const data = await r.json();
+    spinner.style.display = "none";
+    btnStatus.disabled = false;
+    btnDisk.disabled = false;
+
+    if (!r.ok) {
+      term.innerHTML += `<span style="color:#f44">HATA (${r.status}): ${esc(data.detail || data.output || 'Bilinmeyen hata')}</span>`;
+      return;
+    }
+
+    lastRun.textContent = "Son çalıştırma: " + new Date().toLocaleTimeString("tr-TR");
+
+    // Renklendirme ve biçimlendirme
+    let out = data.output || "";
+    out = esc(out);
+    out = out.replace(/== (.*?)(?=\n|$)/g, '<b style="color:#61afef;font-size:13px">== $1</b>');
+    out = out.replace(/(\s|^)OK(\s+)(.*?)(?=\n|$)/g, '$1<span style="color:#98c379;font-weight:bold">[OK]</span>$2$3');
+    out = out.replace(/(\s|^)!!(\s+)(.*?)(?=\n|$)/g, '$1<span style="color:#e06c75;font-weight:bold">[!!]</span>$2<span style="color:#e06c75">$3</span>');
+    out = out.replace(/(\s|^)--(\s+)(.*?)(?=\n|$)/g, '$1<span style="color:#e5c07b;font-weight:bold">[--]</span>$2$3');
+
+    const statusBadge = data.ok
+      ? '<span style="color:#98c379;font-weight:bold">✔ BAŞARILI (Sorun tespit edilmedi - Çıkış Kodu 0)</span>\n'
+      : `<span style="color:#e06c75;font-weight:bold">✖ DİKKAT: En az bir sorun bulundu (Çıkış Kodu ${data.exit_code})</span>\n`;
+
+    term.innerHTML = statusBadge + '\n' + out;
+  } catch (err) {
+    spinner.style.display = "none";
+    btnStatus.disabled = false;
+    btnDisk.disabled = false;
+    term.innerHTML += `<span style="color:#f44">Bağlantı Hatası: ${esc(err.message)}</span>`;
+  }
+}
+
+function clearDiagOutput() {
+  document.getElementById("diag-terminal-wrap").style.display = "none";
+  document.getElementById("diag-terminal").innerHTML = "";
+  document.getElementById("diag-last-run").textContent = "";
 }
 
 </script>

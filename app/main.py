@@ -1021,6 +1021,7 @@ NOTES_DIR = Path(os.environ.get("PREPPER_NOTES_DIR", str(LIBRARY_DIR / "notes"))
 DOCS_DIR = Path(os.environ.get("PREPPER_DOCS_DIR", str(LIBRARY_DIR / "docs")))
 MAPS_DIR = Path(os.environ.get("PREPPER_MAPS_DIR", str(LIBRARY_DIR / "maps")))
 KIWIX_PORT = int(os.environ.get("KIWIX_PORT", "8081"))
+PREPPER_PORT = int(os.environ.get("PREPPER_PORT", os.environ.get("PORT", "7572")))
 
 
 def init_admin_password() -> tuple[str, bool]:
@@ -1593,6 +1594,72 @@ async def api_status():
             "auth_required": bool(ADMIN_PASSWORD),
         },
     }
+
+
+@app.api_route("/api/diagnostics/run", methods=["GET", "POST"])
+async def run_diagnostics(request: Request, tool: str = "status"):
+    if ADMIN_PASSWORD:
+        verify_admin_auth(request)
+
+    tool = tool.strip().lower()
+    if tool in ("status", "status.sh"):
+        script_file = REPO_ROOT / "scripts" / "status.sh"
+        target_name = "status.sh"
+    elif tool in ("disk-health", "disk-health.sh", "disk_health"):
+        script_file = REPO_ROOT / "scripts" / "disk-health.sh"
+        target_name = "disk-health.sh"
+    else:
+        raise HTTPException(status_code=400, detail="Geçersiz tanılama aracı. 'status' veya 'disk-health' seçin.")
+
+    if not script_file.exists():
+        raise HTTPException(status_code=404, detail=f"{script_file.name} dosyası bulunamadı")
+
+    env = os.environ.copy()
+    env["PREPPER_PORT"] = str(PREPPER_PORT)
+    env["PORT"] = str(PREPPER_PORT)
+
+    if os.name == "nt":
+        # Windows ortamı (yerel test): WSL bash üzerinden çalıştır
+        wsl_path = script_file.as_posix().replace("C:", "/mnt/c").replace("c:", "/mnt/c")
+        cmd = ["wsl", "bash", wsl_path]
+    else:
+        # Linux / Docker konteyner ortamı
+        cmd = ["bash", str(script_file)]
+
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+            env=env,
+        )
+        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=30.0)
+        output = stdout.decode("utf-8", errors="replace")
+        exit_code = proc.returncode
+    except asyncio.TimeoutError:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+        return JSONResponse(
+            status_code=504,
+            content={"ok": False, "exit_code": -1, "output": "Zaman aşımı: Tanılama betiği 30 saniye içinde tamamlanamadı.", "tool": target_name},
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"ok": False, "exit_code": -1, "output": f"Betik çalıştırma hatası: {str(e)}", "tool": target_name},
+        )
+
+    return JSONResponse(
+        content={
+            "ok": exit_code == 0,
+            "exit_code": exit_code,
+            "output": output,
+            "tool": target_name,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    )
 
 
 @app.get("/api/catalog")

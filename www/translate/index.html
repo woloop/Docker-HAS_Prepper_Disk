@@ -51,7 +51,23 @@
   textarea.tbox.readonly{background:#F9FBFD;color:#111}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  @media (max-width:680px){ .grid2{grid-template-columns:1fr} .hide-s{display:none} .logo{font-size:22px} }
+  @media (max-width:680px){
+    body{font-size:14px}
+    .wrap{padding:4px}
+    .grid2{grid-template-columns:1fr}
+    .hide-s{display:none}
+    .logo{font-size:22px}
+    .navlinks{font-size:15px;line-height:2.2}
+    .navlinks a{margin:0 14px 0 0}
+    .crumb{font-size:14px}
+    .small{font-size:12px}
+    .forumline th{font-size:13px}
+    .forumline td{padding:8px 6px}
+    td.cat{font-size:14px}
+    select, input[type=text], .btn{font-size:16px;padding:6px 10px}
+    textarea.tbox{font-size:15px;min-height:130px}
+    .copy{font-size:12px}
+  }
 
   /* ilerleme çubuğu */
   .pbar-wrap{width:100%;height:15px;background:#D1D7DC;border:1px solid #7F9DB9;position:relative;overflow:hidden;margin-top:3px}

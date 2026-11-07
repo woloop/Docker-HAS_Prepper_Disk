@@ -46,7 +46,22 @@
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
   .copy{text-align:center;font-size:10px;color:#444;margin:12px 0 4px;line-height:1.6}
-  @media (max-width:720px){ .grid-2{grid-template-columns:1fr} .logo{font-size:22px} }
+  @media (max-width:720px){
+    body{font-size:14px}
+    .wrap{padding:4px}
+    .grid-2{grid-template-columns:1fr}
+    .logo{font-size:22px}
+    .navlinks{font-size:15px;line-height:2.2}
+    .navlinks a{margin:0 14px 0 0}
+    .crumb{font-size:14px}
+    .small{font-size:12px}
+    .forumline th{font-size:13px}
+    .forumline td{padding:8px 6px}
+    td.cat{font-size:14px}
+    .btn, select{font-size:16px;padding:6px 10px}
+    .doc-viewer, .tr-viewer{font-size:14px;line-height:1.7;max-height:350px}
+    .copy{font-size:12px}
+  }
 
   .docker-tag{font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#006699;background:linear-gradient(#EEF2F5,#DEE3E7);border:1px solid #7AA7C7;border-radius:3px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,0.06)}
   .docker-tag svg{width:14px;height:14px;fill:#006699}

@@ -24,7 +24,15 @@
   #msg code{background:#EFEFEF;padding:1px 4px}
   #coord{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.88);padding:2px 6px;font-size:10px;border:1px solid #98AAB1;cursor:pointer}
   .maplibregl-ctrl-attrib{font-size:10px}
-  @media (max-width:640px){ .hide-s{display:none} }
+  @media (max-width:640px){
+    .hide-s{display:none}
+    .bar{height:42px;padding:0 10px;font-size:13px}
+    .bar a{font-size:14px;padding:4px 6px}
+    .bar .t{font-size:14px}
+    .bar input{font-size:14px;padding:4px 6px;width:120px}
+    #map{top:42px}
+    #coord{font-size:12px;padding:4px 8px}
+  }
 </style>
 </head>
 <body>
