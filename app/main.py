@@ -10,7 +10,7 @@ import sqlite3
 import tempfile
 import threading
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
@@ -18,7 +18,7 @@ from xml.sax.saxutils import escape as xml_escape
 
 import httpx
 from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from pydantic import BaseModel
 
 from app.config_parser import (
@@ -1095,6 +1095,8 @@ def verify_admin_auth(request: Request) -> None:
 CAPTIVE_PORTAL_ENABLED = os.environ.get("CAPTIVE_PORTAL_ENABLED", "true").lower() in ("true", "1", "yes")
 
 WWW_HOME = REPO_ROOT / "www" / "home" / "index.html"
+WWW_ACIL = REPO_ROOT / "www" / "home" / "acil.html"
+WWW_DISK_JSON = REPO_ROOT / "www" / "home" / "disk.json"
 WWW_SETUP = REPO_ROOT / "www" / "setup" / "index.html"
 WWW_TRANSLATE = REPO_ROOT / "www" / "translate" / "index.html"
 WWW_DICTIONARY = REPO_ROOT / "www" / "dictionary" / "index.html"
@@ -1356,13 +1358,49 @@ async def root_redirect():
     return RedirectResponse(url="/home")
 
 
-@app.get("/home", include_in_schema=False)
-@app.get("/home/", include_in_schema=False)
-@app.get("/home/index.html", include_in_schema=False)
+@app.api_route("/home", methods=["GET", "HEAD"], include_in_schema=False)
+@app.api_route("/home/", methods=["GET", "HEAD"], include_in_schema=False)
+@app.api_route("/home/index.html", methods=["GET", "HEAD"], include_in_schema=False)
 async def serve_home():
     if not WWW_HOME.exists():
         raise HTTPException(status_code=404, detail="www/home/index.html bulunamadı")
-    return FileResponse(WWW_HOME, media_type="text/html; charset=utf-8")
+    now_http = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")
+    return FileResponse(WWW_HOME, media_type="text/html; charset=utf-8", headers={"Date": now_http})
+
+
+@app.get("/acil", include_in_schema=False)
+@app.get("/acil/", include_in_schema=False)
+@app.get("/home/acil", include_in_schema=False)
+@app.get("/home/acil.html", include_in_schema=False)
+async def serve_acil():
+    if not WWW_ACIL.exists():
+        raise HTTPException(status_code=404, detail="www/home/acil.html bulunamadı")
+    return FileResponse(WWW_ACIL, media_type="text/html; charset=utf-8")
+
+
+@app.get("/home/disk.json", include_in_schema=False)
+async def serve_disk_json():
+    warnings = []
+    if WWW_DISK_JSON.exists():
+        try:
+            with open(WWW_DISK_JSON, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                warnings.extend(data.get("warnings", []))
+        except Exception:
+            pass
+
+    try:
+        usage = shutil.disk_usage(str(ZIM_DIR))
+        pct = int((usage.used / usage.total) * 100) if usage.total > 0 else 0
+        if pct >= 95:
+            msg = f"Disk %{pct} dolu. Yeni içerik ve güncellemeler için yer kalmadı."
+            if msg not in warnings:
+                warnings.append(msg)
+    except Exception:
+        pass
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    return JSONResponse(content={"checked": now_iso, "warnings": warnings})
 
 
 @app.get("/setup", include_in_schema=False)

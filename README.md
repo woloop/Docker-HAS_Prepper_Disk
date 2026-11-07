@@ -49,6 +49,9 @@ Uygulama, tek bir Docker konteyneri içinde hafif ve bağımsız modüller halin
 * **Çevrimdışı Çok Dilli Nöral Çeviri Motoru (`app/translator.py`):** Argos Translate (CTranslate2 + SentencePiece) altyapısını kullanarak CPU üzerinde internet olmadan 15 dil arasında doğrudan veya İngilizce köprü (pivot) üzerinden çeviri yapar.
 * **Çevrimdışı Çift Yönlü Kelime Sözlüğü (`app/dictionary.py`):** FreeDict tabanlı 11 dil çifti ve 550.000+ kelimeyi içeren SQLite veritabanlarında milisaniyeler içinde kelimesi kelimesine çift yönlü arama sunar.
 * **Saha Araçları, Ortak Notlar ve Kişisel Belgeler (`/tools`, `/docs`):** Su klorlama, güneş/akü süresi, birim dönüştürücü ve ORS tuz-şeker oranı hesaplayıcılarını, yerel ağda ortak paylaşılan not defterini ve yer imlerini (`/tools`) ve çevrimdışı çeviri destekli kişisel belge kitaplığını (`/docs`) içerir.
+* **Çevrimdışı Vektör Harita ve Captive Portal (`/maps`):** OpenStreetMap ve Protomaps PMTiles tabanlı çevrimdışı Türkiye ve dünya vektör haritasını sunar; Wi-Fi ağına bağlanan cihazları (Android, iOS, Windows) otomatik karşılama portalıyla doğrudan ana sayfaya yönlendirir.
+* **Sistem ve Donanım Sağlık Denetimi (`scripts/status.sh`, `scripts/disk-health.sh`, `saglik/`):** NVMe/SSD diskin salt-okunur duruma düşmesini, dosya sistemi hatalarını, SMART arıza belirtilerini ve voltaj düşüklüğünü izleyerek ana sayfada kırmızı alarm gösterir; `scripts/status.sh` ile terminalden anında tam sistem kontrolü yapılır.
+* **Çevrimdışı Acil Durum Rehberi (`www/home/acil.html`):** AFAD, CDC ve EPA referanslı; deprem anı/sonrası kuralları, enkaz altında hayatta kalma, içme suyu dezenfeksiyonu ve 72 saatlik afet çantası hızlı başvuru kılavuzu.
 * **Kalıcı Depolama Alanı (`./library`):** ZIM arşivleri (`/zims/content`), çeviri modelleri (`/models`), sözlük veritabanları (`/dictionaries`), ortak notlar (`/notes`) ve kişisel belgeler (`/docs`) diski formatlamaya gerek kalmadan ana sistemdeki bu klasörde saklanır.
 
 ### Hızlı Kurulum
@@ -68,10 +71,12 @@ docker compose up -d --build
 **3. Web arayüzlerini kullanın**
 * **Kurulum ve Paket Yöneticisi:** `http://localhost:7572/setup` — İndirilecek ZIM arşivlerini, sözlükleri ve çeviri dillerini seçip paralel indirmeleri takip edin veya kendi `.zim` dosyanızı yükleyin.
 * **Kütüphane Portalı:** `http://localhost:7572/home` — İndirilen Vikipedi, tıp ve tamir rehberlerini çevrimdışı okuyun.
+* **Acil Durum Rehberi:** `http://localhost:7572/home/acil.html` (veya `/acil`) — AFAD, CDC ve EPA referanslı; deprem, enkaz, su arıtma ve acil durum rehberi.
 * **Çevrimdışı Sözlük:** `http://localhost:7572/dictionary` — İnternet olmadan 11 dilde çift yönlü kelimesi kelimesine sözlük araması yapın.
 * **Çevrimdışı Çeviri:** `http://localhost:7572/translate` — Yabancı dildeki metin ve dokümanları yerel yapay zeka ile çevirin.
 * **Araçlar ve Notlar:** `http://localhost:7572/tools` — Su arıtma, enerji, birim ve ORS hesaplayıcılarını, ortak not defterini ve kütüphane yer imlerini kullanın.
 * **Kişisel Belgeler:** `http://localhost:7572/docs` — Kendi PDF, TXT ve Markdown belgelerinizi yükleyin, okuyun ve çevrimdışı çevirin.
+* **Çevrimdışı Vektör Harita:** `http://localhost:7572/maps` — Çevrimdışı sokak seviyesinde vektör haritayı gezin.
 
 ### Harici Disk ve Depolama Yapılandırması
 
@@ -86,6 +91,14 @@ Dilerseniz bu ayarı ana dizinde bir `.env` dosyası oluşturarak da tanımlayab
 PREPPER_LIBRARY_PATH=/mnt/harici_disk/library
 PORT=7572
 ```
+
+### Sağlık Kontrolü ve Sorun Giderme
+
+Sistemdeki boş alanı, servisleri, ZIM kütüphanesini ve donanım sağlığını kontrol etmek için:
+```bash
+./scripts/status.sh
+```
+Sadece okuma yapar, `sudo` gerektirmez. SD kart ve SSD'deki boş alanı, web arayüzünü, `content.conf` içindeki eksik ZIM'leri, yarım kalan indirmeleri, işlemci sıcaklığını ve düşük voltajı denetler.
 
 ### Lisans
 
@@ -114,35 +127,40 @@ While the original [schematrix/HAS_Prepper_Disk](https://github.com/schematrix/H
 
 The application operates as lightweight, decoupled modules within a single Docker container:
 
-* **FastAPI Web Server & Reverse Proxy (pp/main.py):** The primary entrypoint on port 7572. It serves retro phpBB2-themed interfaces with zero external CDN dependencies, transparently reverse-proxies library reading requests (/kiwix/*) to the background Kiwix service, and injects an offline navigation and select-to-translate helper bar into article pages.
-* **Dynamic Kiwix Manager (pp/kiwix_manager.py):** Supervises the embedded kiwix-serve daemon. Whenever new ZIM archives are downloaded, uploaded locally, or deleted, it dynamically updates the library.xml index via kiwix-manage, hot-reloading the library without interrupting user reading sessions.
-* **Resumable Parallel Async Downloader (pp/downloader.py):** Scrapes official Kiwix mirrors to automatically resolve the latest release dates for packages. It supports concurrent parallel downloads (1–6 streams), HTTP Range resumption via .part files, automatic retry on network drops, bulk deletion, and custom external .zim URL downloads.
-* **Offline Multi-Language Neural Translation Engine (pp/translator.py):** Leverages Argos Translate (CTranslate2 + SentencePiece) to run CPU-optimized neural translation models completely offline across 15 languages, directly or through an automatic English pivot bridge.
-* **Offline Bidirectional Word Dictionary (pp/dictionary.py):** Provides instant, sub-millisecond word-for-word searches across SQLite databases covering 11 FreeDict language pairs and over 550,000 terms.
-* **Field Tools, Shared Notes, and Personal Documents (/tools, /docs):** Includes offline water disinfection, solar/battery runtime, unit conversion, and ORS electrolyte calculators, alongside a shared local LAN bulletin board with bookmarks (/tools), and a personal document library with offline translation support (/docs).
-* **Offline Vector Maps & Captive Portal (/maps, OfflineMapManager):** Serves an interactive vector map of Turkey based on OpenStreetMap and Protomaps PMTiles (/maps), and provides captive portal probe endpoints to automatically redirect connecting Wi-Fi devices (Android, iOS, Windows) directly to /home.
-* **Persistent Storage Mount (./library):** ZIM archives (/zims/content), map data (/maps), neural models (/models), dictionary databases (/dictionaries), shared notes (/notes), and personal documents (/docs) are safely stored in this directory on the host system without requiring drive formatting.
+* **FastAPI Web Server & Reverse Proxy (`app/main.py`):** The primary entrypoint on port 7572. It serves retro phpBB2-themed interfaces with zero external CDN dependencies, transparently reverse-proxies library reading requests (`/kiwix/*`) to the background Kiwix service, and injects an offline navigation and select-to-translate helper bar into article pages.
+* **Dynamic Kiwix Manager (`app/kiwix_manager.py`):** Supervises the embedded kiwix-serve daemon. Whenever new ZIM archives are downloaded, uploaded locally, or deleted, it dynamically updates the `library.xml` index via `kiwix-manage`, hot-reloading the library without interrupting user reading sessions.
+* **Resumable Parallel Async Downloader (`app/downloader.py`):** Scrapes official Kiwix mirrors to automatically resolve the latest release dates for packages. It supports concurrent parallel downloads (1–6 streams), HTTP Range resumption via `.part` files, automatic retry on network drops, bulk deletion, and custom external `.zim` URL downloads.
+* **Offline Multi-Language Neural Translation Engine (`app/translator.py`):** Leverages Argos Translate (CTranslate2 + SentencePiece) to run CPU-optimized neural translation models completely offline across 15 languages, directly or through an automatic English pivot bridge.
+* **Offline Bidirectional Word Dictionary (`app/dictionary.py`):** Provides instant, sub-millisecond word-for-word searches across SQLite databases covering 11 FreeDict language pairs and over 550,000 terms.
+* **Field Tools, Shared Notes, and Personal Documents (`/tools`, `/docs`):** Includes offline water disinfection, solar/battery runtime, unit conversion, and ORS electrolyte calculators, alongside a shared local LAN bulletin board with bookmarks (`/tools`), and a personal document library with offline translation support (`/docs`).
+* **Offline Vector Maps & Captive Portal (`/maps`, `OfflineMapManager`):** Serves an interactive vector map of Turkey based on OpenStreetMap and Protomaps PMTiles (`/maps`), and provides captive portal probe endpoints to automatically redirect connecting Wi-Fi devices (Android, iOS, Windows) directly to `/home`.
+* **Hardware & System Health Monitoring (`scripts/status.sh`, `scripts/disk-health.sh`, `saglik/`):** Checks read-only mounts, ext4 file system errors, SMART health, storage capacity, and under-voltage flags, alerting directly on the homepage; `scripts/status.sh` offers instant terminal diagnostics.
+* **Emergency Quick Reference (`www/home/acil.html`):** AFAD, CDC, and EPA-sourced offline earthquake instructions, water disinfection (boil/bleach), and emergency preparedness guidelines.
+* **Persistent Storage Mount (`./library`):** ZIM archives (`/zims/content`), map data (`/maps`), neural models (`/models`), dictionary databases (`/dictionaries`), shared notes (`/notes`), and personal documents (`/docs`) are safely stored in this directory on the host system without requiring drive formatting.
 
 ### Quick Start
 
 **1. Clone the repository**
-\\ash
+```bash
 git clone https://github.com/woloop/Docker-HAS_Prepper_Disk.git
 cd Docker-HAS_Prepper_Disk
-\
+```
+
 **2. Start the container**
-\\ash
+```bash
 docker compose up -d --build
 # or execute: ./install.sh
-\
+```
+
 **3. Access the web interfaces**
-* **Setup & Package Manager:** http://localhost:7572/setup — Select ZIM archives, dictionaries, and translation languages, monitor parallel downloads, or upload your own .zim files.
-* **Knowledge Portal:** http://localhost:7572/home — Browse installed Wikipedia, WikiMed, and practical repair guides.
-* **Offline Dictionary:** http://localhost:7572/dictionary — Search word-for-word across 11 languages without internet.
-* **Offline Translation:** http://localhost:7572/translate — Translate foreign documents locally using neural AI.
-* **Tools and Notes:** http://localhost:7572/tools — Use water treatment, energy, unit, and ORS calculators, shared LAN field notes, and bookmarks.
-* **Personal Documents:** http://localhost:7572/docs — Upload, read, and offline-translate your own PDF, TXT, and Markdown documents.
-* **Offline Vector Maps:** http://localhost:7572/maps — Explore the offline vector map of Turkey.
+* **Setup & Package Manager:** `http://localhost:7572/setup` — Select ZIM archives, dictionaries, and translation languages, monitor parallel downloads, or upload your own `.zim` files.
+* **Knowledge Portal:** `http://localhost:7572/home` — Browse installed Wikipedia, WikiMed, and practical repair guides.
+* **Emergency Reference:** `http://localhost:7572/home/acil.html` (or `/acil`) — Offline disaster quick reference, first-aid, water purification (CDC/EPA), and 72-hour survival checklist.
+* **Offline Dictionary:** `http://localhost:7572/dictionary` — Search word-for-word across 11 languages without internet.
+* **Offline Translation:** `http://localhost:7572/translate` — Translate foreign documents locally using neural AI.
+* **Tools and Notes:** `http://localhost:7572/tools` — Use water treatment, energy, unit, and ORS calculators, shared LAN field notes, and bookmarks.
+* **Personal Documents:** `http://localhost:7572/docs` — Upload, read, and offline-translate your own PDF, TXT, and Markdown documents.
+* **Offline Vector Maps:** `http://localhost:7572/maps` — Explore the offline vector map of Turkey.
 
 ### Custom Storage Configuration
 
@@ -157,6 +175,14 @@ You can also define this setting in a `.env` file in the project root:
 PREPPER_LIBRARY_PATH=/mnt/custom_disk/library
 PORT=7572
 ```
+
+### Health Check & Diagnostics
+
+Run the read-only health check script to diagnose issues:
+```bash
+./scripts/status.sh
+```
+It inspects free disk space, services, missing ZIM archives, unfinished downloads, CPU temperature, and under-voltage events without modifying the system.
 
 ### License
 
